@@ -125,6 +125,28 @@ body.nomemo #side{display:none}
 .bg td.hit{background:#c6efce;color:#006100;font-weight:700}
 .bg td.last{background:#ffeb9c;color:#9c5700}
 .bg td.sel{outline:2px solid var(--green);outline-offset:-2px;background:#e2efda}
+/* mafia */
+.mf-role{border:2px solid #4472c4;background:#fff;padding:8px 12px;margin-bottom:10px;max-width:520px}
+.mf-role.m{border-color:#c00000;background:#fff5f5}
+.mf-role .rn{font-size:20px;font-weight:700}
+.mf-btns{display:flex;flex-wrap:wrap;gap:6px;max-width:560px;background:#fff;padding:4px 0}
+.mf-btns .xb{height:28px}
+.mf-btns .xb.sel{background:#ffeb9c;border-color:#9c5700;color:#9c5700;font-weight:700}
+.mf-ann{font-size:15px;font-weight:700;background:#fff2cc;border:1px solid #ffd966;padding:8px 12px;margin:6px 0;max-width:560px}
+.mf-night .ttl{background:#1f2a44;color:#fff;border-color:#1f2a44;padding:0 6px}
+.xt tr.dead td{color:#a6a6a6;text-decoration:line-through}
+.ch-mafia{background:#ffe5e5;border-color:#f4b6b6}
+.ch-dead{background:#eeeeee;border-color:#cccccc}
+/* omok */
+.om{border-collapse:collapse;background:#fff;user-select:none}
+.om td{width:26px;min-width:26px;height:26px;border:1px solid #d4d4d4;padding:0;text-align:center}
+.om td.can{cursor:pointer}
+.om td.can:hover{background:#e2efda}
+.om td.last{background:#fff2cc}
+.om td.wl{background:#ffc7ce}
+.om .st{display:block;width:18px;height:18px;border-radius:50%;margin:auto}
+.om .st.b{background:#262626}
+.om .st.w{background:#fff;border:1.5px solid #404040;box-sizing:border-box}
 /* boss */
 .bt{border-collapse:collapse;table-layout:fixed}
 .bt td{width:72px;max-width:72px;height:22px;padding:0 4px;font-size:13px;white-space:nowrap;overflow:visible}
@@ -148,6 +170,14 @@ body.boss #dlg{display:none!important}
 .acct{background:#f3f3f3;border:1px solid #d4d4d4;padding:8px 10px;margin:10px 0;font-size:14px}
 .acct b{font-size:16px;letter-spacing:1px}
 .dft{padding:0 16px 14px;text-align:right;display:flex;gap:6px;justify-content:flex-end}
+#rtList{display:flex;gap:2px;flex:1;min-width:0;overflow:hidden}
+#shareBtn{flex:none;align-self:center;margin:3px 4px 3px 8px;background:#fff;color:#217346;font-weight:700;border-radius:4px;padding:3px 12px;cursor:pointer;white-space:nowrap;box-shadow:0 0 0 2px #ffd966;animation:shareGlow 2.4s ease-in-out 3}
+#shareBtn:hover{background:#fff2cc}
+@keyframes shareGlow{0%,100%{box-shadow:0 0 0 2px #ffd966}50%{box-shadow:0 0 0 5px rgba(255,217,102,.5)}}
+body.boss #shareBtn{display:none}
+.acct b{user-select:all}
+#dlgCopy.done{background:#00a050;border-color:#00804a}
+.dcard{border:2px solid #ffd966;background:#fffbea;padding:8px 12px;margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
 #helpTab{cursor:pointer}
 #helpTab:hover{background:rgba(255,255,255,.15)}
 @media (max-width:760px){
@@ -164,7 +194,8 @@ body.boss #dlg{display:none!important}
   <span><span class="tb-btn" id="bossBtn" title="업무 화면 전환 (ESC)">─</span><span class="tb-btn">□</span><span class="tb-btn">✕</span></span>
 </div>
 <div id="ribbonTabs">
-  <span class="rt">파일</span><span class="rt on">홈</span><span class="rt">삽입</span><span class="rt">그리기</span><span class="rt">페이지 레이아웃</span><span class="rt">수식</span><span class="rt">데이터</span><span class="rt">검토</span><span class="rt">보기</span><span class="rt" id="helpTab">도움말</span>
+  <span id="rtList"><span class="rt">파일</span><span class="rt on">홈</span><span class="rt">삽입</span><span class="rt">그리기</span><span class="rt">페이지 레이아웃</span><span class="rt">수식</span><span class="rt">데이터</span><span class="rt">검토</span><span class="rt">보기</span><span class="rt" id="helpTab">도움말</span></span>
+  <span id="shareBtn" title="개발자 후원">☕ 개발자 후원</span>
 </div>
 <div id="ribbon">
   <div class="rg"><div class="it"><div class="rb"><span class="ic">📋</span>붙여넣기</div><div class="col"><span class="rs">✂ 잘라내기</span><span class="rs">⎘ 복사</span><span class="rs">🖌 서식 복사</span></div></div><div class="lb">클립보드</div></div>
@@ -206,8 +237,8 @@ body.boss #dlg{display:none!important}
 'use strict';
 /* ===================== 기본 설정 ===================== */
 const PREFIX='xlsmini-v1-';
-const MAXP=6;
-const COLORS=['#c00000','#0070c0','#00a050','#7030a0','#ed7d31','#a08000'];
+const MAXP=10;
+const COLORS=['#c00000','#0070c0','#00a050','#7030a0','#ed7d31','#a08000','#e0218a','#00a3a3','#5b9bd5','#404040'];
 const START_WORDS=['사과','기차','바다','나무','회의','엑셀','보고서','커피','점심','야근','출근','월급','휴가','사무실','프린터','결재','회식','주말','달력','연필','택배','김밥','라면','모니터','키보드','마우스','계약서','출장','명함','복사기'];
 
 /* ===== 광고 · 꾸미기 설정 ===== */
@@ -330,7 +361,7 @@ function hostRecv(c,d){
   if(!S||!d||typeof d!=='object')return;
   if(d.t==='join'){
     if(conns[c.peer])return;
-    if(S.players.length>=MAXP){c.send({t:'reject',msg:'회의실이 꽉 찼어요 (최대 6명).'});setTimeout(()=>c.close(),800);return;}
+    if(S.players.length>=MAXP){c.send({t:'reject',msg:'회의실이 꽉 찼어요 (최대 10명).'});setTimeout(()=>c.close(),800);return;}
     const used=S.players.map(p=>p.color);let col=0;while(used.includes(col))col++;
     const name=String(d.name||'').trim().slice(0,10)||'손님';
     conns[c.peer]=c;S.players.push({id:c.peer,name,color:col,wins:0,ti:okTitle(d.ti),nc:okColor(d.nc)});
@@ -349,13 +380,24 @@ function dropPlayer(id){
 function broadcast(){
   if(!isHost||!S)return;
   S.now=Date.now();
-  const m={t:'state',s:S};
-  Object.values(conns).forEach(c=>{try{if(c.open)c.send(m);}catch(e){}});
+  // 사람마다 볼 수 있는 정보가 다를 수 있어서(마피아 직업 등) 각자 맞춤 상태를 보내요
+  Object.entries(conns).forEach(([id,c])=>{try{if(c.open)c.send({t:'state',s:viewState(id)});}catch(e){}});
   render();
 }
 function act(a){
   if(isHost)handleAction(myId,a);
   else if(hostConn&&hostConn.open)hostConn.send({t:'act',a});
+}
+function chatVisible(c,pid){
+  if(!c.to||!S||S.phase!=='game'||S.game!=='mafia'||!S.g)return true;
+  return MAFIA.canSee(c,pid);
+}
+function viewState(pid){
+  const v=Object.assign({},S);
+  v.chat=S.chat.filter(c=>chatVisible(c,pid));
+  const G=S.game&&GAMES[S.game];
+  if(G&&G.viewFor&&S.g&&S.phase!=='lobby')v.g=G.viewFor(pid);
+  return v;
 }
 function sysChat(m){S.chat.push({sys:1,m});S.chatN++;if(S.chat.length>80)S.chat.shift();}
 
@@ -365,7 +407,9 @@ function handleAction(pid,a){
   const host=pid===myId;
   if(a.type==='chat'){
     const p=P(pid);const m=String(a.m||'').trim().slice(0,200);if(!p||!m)return;
-    S.chat.push({n:p.name,c:p.color,ti:p.ti,nc:p.nc,m});S.chatN++;if(S.chat.length>80)S.chat.shift();
+    let to='';
+    if(S.phase==='game'&&S.game==='mafia'){to=MAFIA.chatScope(pid,S.g);if(to===null)return;}
+    S.chat.push({n:p.name,c:p.color,ti:p.ti,nc:p.nc,m,to});S.chatN++;if(S.chat.length>80)S.chat.shift();
     broadcast();return;
   }
   if(a.type==='cosm'){
@@ -717,7 +761,330 @@ const WORD={
 };
 function sendWord(){const el=$('#wIn');if(!el)return;const v=el.value.trim();if(!v)return;el.value='';act({type:'wsay',w:v});}
 
-const GAMES={mine:MINE,bingo:BINGO,word:WORD};
+/* ===================== 게임 4: 오목 (2인) ===================== */
+function omokLine(b,N,i,c){
+  const r=Math.floor(i/N),q=i%N;
+  for(const [dr,dc] of [[0,1],[1,0],[1,1],[1,-1]]){
+    const cells=[i];
+    for(const s of [1,-1]){
+      let rr=r+dr*s,cc=q+dc*s;
+      while(rr>=0&&rr<N&&cc>=0&&cc<N&&b[rr*N+cc]===c){cells.push(rr*N+cc);rr+=dr*s;cc+=dc*s;}
+    }
+    if(cells.length>=5)return cells;
+  }
+  return null;
+}
+const OMOK={
+  name:'오목',sheet:'근태관리',min:2,max:2,
+  desc:'흑백 돌을 번갈아 두고 5개를 먼저 이으면 승리 (3명 이상이면 2명을 뽑고 나머지는 관전)',
+  LIMIT:60,
+  start(){
+    const ids=shuffle(S.players.map(p=>p.id)).slice(0,2);
+    S.g={N:15,b:new Array(225).fill(0),black:ids[0],white:ids[1],turn:1,last:-1,moves:0,deadline:0,line:null};
+    this.arm();
+  },
+  cur(){const g=S.g;return g.turn===1?g.black:g.white;},
+  other(id){const g=S.g;return id===g.black?g.white:g.black;},
+  arm(){
+    const g=S.g;g.deadline=Date.now()+this.LIMIT*1000;
+    setHostTimer(this.LIMIT*1000+300,()=>{if(S&&S.phase==='game'&&S.g===g){const l=this.cur();this.end(this.other(l),l,'상대 시간 초과');}});
+  },
+  end(w,l,why){
+    const g=S.g;
+    finishGame([w,l],id=>(id===w?'승리 · '+why:'패배')+' · '+g.moves+'수',[w]);
+  },
+  action(pid,a){
+    const g=S.g;if(a.type!=='oput'||pid!==this.cur())return;
+    const i=a.i|0;if(i<0||i>=225||g.b[i])return;
+    g.b[i]=g.turn;g.last=i;g.moves++;
+    const line=omokLine(g.b,g.N,i,g.turn);
+    if(line){g.line=line;this.end(pid,this.other(pid),'오목 완성');return;}
+    if(g.moves>=225){finishGame([g.black,g.white],()=>'무승부 · '+g.moves+'수',[]);return;}
+    g.turn=3-g.turn;this.arm();broadcast();
+  },
+  leave(pid){const g=S.g;if(pid===g.black||pid===g.white)this.end(this.other(pid),pid,'상대가 나감');},
+  formula(){const g=S.g;return '=IF(COUNTIF(근태관리!A1:O15,"●")='+Math.ceil(g.moves/2)+',"'+pname(this.cur())+' 결재 대기","")';},
+  render(){
+    const g=S.g,cur=this.cur(),me=myId===g.black?1:myId===g.white?2:0;
+    const my=S.phase==='game'&&me===g.turn;
+    const line=new Set(g.line||[]);
+    let h='<div class="row"><div class="sec"><div class="ttl">근태 관리표</div><div class="bar">';
+    if(S.phase==='game'){
+      h+=my?'<span class="stat bad">내 차례! ('+(me===1?'흑 ●':'백 ○')+')</span>':'<span class="stat">'+esc(pname(cur))+' 님 차례 ('+(g.turn===1?'흑':'백')+')</span>';
+      h+='<span>· 남은 시간 <span data-dl="'+g.deadline+'"></span></span>';
+      if(!me)h+='<span>· 관전 중</span>';
+    }
+    h+='</div><table class="om">';
+    for(let r=0;r<g.N;r++){
+      h+='<tr>';
+      for(let c=0;c<g.N;c++){
+        const i=r*g.N+c,v=g.b[i],cl=[];
+        if(line.has(i))cl.push('wl');else if(i===g.last)cl.push('last');
+        if(my&&!v)cl.push('can');
+        h+='<td class="'+cl.join(' ')+'" data-a="ocell" data-v="'+i+'">'+(v?'<i class="st '+(v===1?'b':'w')+'"></i>':'')+'</td>';
+      }
+      h+='</tr>';
+    }
+    h+='</table><div class="hint">가로·세로·대각선으로 5개 이상 이으면 승리 · 한 수에 '+this.LIMIT+'초, 시간 초과 시 패배</div></div>';
+    h+='<div class="sec"><div class="ttl">대국자</div><table class="xt"><tr><th>돌</th><th>이름</th><th>상태</th></tr>';
+    [[g.black,'● 흑',1],[g.white,'○ 백',2]].forEach(([id,lb,t])=>{
+      h+='<tr><td>'+lb+'</td><td><span class="dot" style="background:'+pcol(id)+'"></span>'+nameHTML(id)+(id===myId?' (나)':'')+'</td><td>'+(S.phase==='game'&&g.turn===t?'▶ 차례':'')+'</td></tr>';
+    });
+    h+='</table><div class="hint">진행 '+g.moves+'수</div></div></div>';
+    return h;
+  }
+};
+function omokClick(i){
+  if(!S||S.phase!=='game'||S.game!=='omok')return;
+  const g=S.g;if(OMOK.cur()!==myId||g.b[i])return;
+  act({type:'oput',i});
+}
+
+/* ===================== 게임 5: 마피아 (6~10명) ===================== */
+const ROLE_INFO={
+  mafia:{n:'마피아',team:'m',e:'🕴️',d:'밤마다 동료 마피아와 함께 한 명을 골라 제거해요. 밤에는 마피아끼리 몰래 대화할 수 있어요. 마피아 수가 나머지와 같아지면 승리!'},
+  police:{n:'경찰',team:'c',e:'🔍',d:'밤마다 한 명을 조사해서 마피아인지 아닌지 알아내요. 결과는 아침에 나만 볼 수 있어요.'},
+  doctor:{n:'의사',team:'c',e:'💉',d:'밤마다 한 명을 골라 마피아의 공격에서 지켜요. 자기 자신도 고를 수 있어요.'},
+  citizen:{n:'시민',team:'c',e:'👔',d:'특별한 능력은 없지만, 토론과 투표로 마피아를 찾아내는 게 핵심이에요.'}
+};
+const MAFIA_SETUP={
+  6:['mafia','mafia','police','doctor','citizen','citizen'],
+  7:['mafia','mafia','police','doctor','citizen','citizen','citizen'],
+  8:['mafia','mafia','police','doctor','citizen','citizen','citizen','citizen'],
+  9:['mafia','mafia','mafia','police','doctor','citizen','citizen','citizen','citizen'],
+  10:['mafia','mafia','mafia','police','doctor','citizen','citizen','citizen','citizen','citizen']
+};
+const MAFIA={
+  name:'마피아',sheet:'인사평가',min:6,max:10,
+  desc:'마피아·경찰·의사·시민. 밤에는 능력을 쓰고 낮에는 토론·투표로 마피아를 찾아요',
+  T:{role:12,night:40,day:120,vote:30,exec:7},
+  start(){
+    const ids=S.players.map(p=>p.id).slice(0,10);
+    const roles=shuffle(MAFIA_SETUP[ids.length].slice());
+    const g={stage:'role',day:0,order:ids,names:{},roles:{},alive:{},priv:{},act:{},votes:{},skip:{},lastVotes:null,
+             revealed:{},soldierUsed:false,log:[],execMsg:'',deadline:0,winner:null};
+    ids.forEach((id,i)=>{g.roles[id]=roles[i];g.alive[id]=true;g.priv[id]=[];g.names[id]=pname(id);});
+    S.g=g;this.stageTo('role');
+  },
+  nm(id){const g=S.g;return (g&&g.names[id])||pname(id);},
+  aliveIds(g){return g.order.filter(id=>g.alive[id]);},
+  needs(g){ // 오늘 밤 행동해야 하는 사람
+    const anyDead=g.order.some(id=>!g.alive[id]);
+    return this.aliveIds(g).filter(id=>{const r=g.roles[id];return r==='mafia'||r==='police'||r==='doctor'||(r==='medium'&&anyDead);});
+  },
+  validTarget(g,pid,t){
+    const r=g.roles[pid];if(!g.order.includes(t))return false;
+    if(r==='medium')return !g.alive[t];
+    if(!g.alive[t])return false;
+    if(r==='mafia')return g.roles[t]!=='mafia';
+    if(r==='police')return t!==pid;
+    return r==='doctor';
+  },
+  stageTo(st){
+    const g=S.g;g.stage=st;g.deadline=Date.now()+this.T[st]*1000;
+    if(st==='night'){g.day++;g.act={};g.log.push('🌙 '+g.day+'번째 밤 — 모두 눈을 감으세요.');}
+    if(st==='day')g.skip={};
+    if(st==='vote'){g.votes={};g.lastVotes=null;}
+    setHostTimer(this.T[st]*1000+300,()=>{if(S&&S.phase==='game'&&S.g===g&&g.stage===st)this.advance();});
+  },
+  advance(){
+    const g=S.g;
+    if(g.stage==='role')this.stageTo('night');
+    else if(g.stage==='night'){this.resolveNight();if(this.winCheck())return;this.stageTo('day');}
+    else if(g.stage==='day')this.stageTo('vote');
+    else if(g.stage==='vote'){this.resolveVote();if(this.winCheck())return;this.stageTo('exec');}
+    else if(g.stage==='exec')this.stageTo('night');
+    broadcast();
+  },
+  action(pid,a){
+    const g=S.g;if(!g.roles[pid])return;
+    if(a.type==='mrole'){if(pid===S.hostId&&g.stage==='role')this.advance();return;}
+    if(a.type==='mskip'&&a.force){if(pid===S.hostId&&g.stage==='day')this.advance();return;} // 방장은 죽어도 진행 가능
+    if(!g.alive[pid])return;
+    if(a.type==='mact'&&g.stage==='night'&&this.needs(g).includes(pid)&&this.validTarget(g,pid,a.t)){
+      g.act[pid]=a.t;
+      if(this.needs(g).every(id=>g.act[id]))this.advance();else broadcast();
+      return;
+    }
+    if(a.type==='mskip'&&g.stage==='day'){
+      g.skip[pid]=!g.skip[pid];
+      const al=this.aliveIds(g);
+      if(al.filter(id=>g.skip[id]).length>al.length/2)this.advance();else broadcast();
+      return;
+    }
+    if(a.type==='mvote'&&g.stage==='vote'&&(a.t==='skip'||(g.alive[a.t]&&a.t!==pid))){
+      g.votes[pid]=a.t;
+      if(this.aliveIds(g).every(id=>g.votes[id]))this.advance();else broadcast();
+    }
+  },
+  resolveNight(){
+    const g=S.g,al=this.aliveIds(g),nm=id=>this.nm(id);
+    const tally={};
+    al.filter(id=>g.roles[id]==='mafia').forEach(id=>{const t=g.act[id];if(t&&g.alive[t])tally[t]=(tally[t]||0)+1;});
+    let target=null;const ks=Object.keys(tally);
+    if(ks.length){const mx=Math.max(...ks.map(k=>tally[k]));target=pick(ks.filter(k=>tally[k]===mx));}
+    const docId=al.find(id=>g.roles[id]==='doctor'),saved=docId?g.act[docId]:null;
+    let txt;
+    if(!target)txt='조용한 밤이었어요. 아무도 죽지 않았습니다.';
+    else if(target===saved){txt='의사가 누군가를 살렸습니다! 아무도 죽지 않았어요.';g.priv[docId].push('💉 '+g.day+'번째 밤: '+nm(target)+' 님을 살려냈어요!');}
+    else if(g.roles[target]==='soldier'&&!g.soldierUsed){g.soldierUsed=true;txt='누군가 마피아의 공격을 버텨냈습니다! 아무도 죽지 않았어요.';g.priv[target].push('🪖 '+g.day+'번째 밤: 마피아의 공격을 버텼어요. 다음 공격은 못 버텨요!');}
+    else{g.alive[target]=false;txt=nm(target)+' 님이 마피아에게 당했습니다.';}
+    al.forEach(id=>{
+      const r=g.roles[id],t=g.act[id];if(!t)return;
+      if(r==='police')g.priv[id].push('🔍 '+g.day+'번째 밤: '+nm(t)+' 님은 '+(g.roles[t]==='mafia'?'마피아입니다!':'마피아가 아닙니다.'));
+      if(r==='medium')g.priv[id].push('🔮 '+g.day+'번째 밤: '+nm(t)+' 님의 직업은 '+ROLE_INFO[g.roles[t]].n+'입니다.');
+    });
+    g.log.push('☀️ '+g.day+'일차 아침 — '+txt);
+  },
+  resolveVote(){
+    const g=S.g,al=this.aliveIds(g),nm=id=>this.nm(id);
+    const tally={};let skip=0;
+    al.forEach(id=>{const v=g.votes[id];if(!v||v==='skip'||!g.alive[v])skip++;else tally[v]=(tally[v]||0)+1;});
+    g.lastVotes=Object.assign({},g.votes);
+    const ks=Object.keys(tally);let txt;
+    if(!ks.length)txt='모두 기권해서 아무도 해고되지 않았습니다.';
+    else{
+      const mx=Math.max(...ks.map(k=>tally[k])),top=ks.filter(k=>tally[k]===mx);
+      if(top.length>1)txt='동점이라 아무도 해고되지 않았습니다.';
+      else if(skip>=mx)txt='기권이 많아서 아무도 해고되지 않았습니다.';
+      else{
+        const t=top[0];
+        if(g.roles[t]==='politician'){g.revealed[t]=true;txt=nm(t)+' 님이 '+mx+'표를 받았지만, 정치인이라 해고되지 않았습니다!';}
+        else{g.alive[t]=false;txt=nm(t)+' 님이 '+mx+'표로 해고(처형)되었습니다.';}
+      }
+    }
+    g.execMsg=txt;g.log.push('⚖️ '+g.day+'일차 투표 — '+txt);
+  },
+  winCheck(){
+    const g=S.g,al=this.aliveIds(g),m=al.filter(id=>g.roles[id]==='mafia').length;
+    let w=null;if(m===0)w='c';else if(m>=al.length-m)w='m';
+    if(!w)return false;
+    g.winner=w;g.stage='end';
+    g.log.push(w==='m'?'🕴️ 마피아 팀이 회사를 장악했습니다!':'🎉 시민 팀이 마피아를 모두 찾아냈습니다!');
+    const team=id=>ROLE_INFO[g.roles[id]].team;
+    const winners=g.order.filter(id=>team(id)===w);
+    finishGame(winners.concat(g.order.filter(id=>team(id)!==w)),id=>ROLE_INFO[g.roles[id]].e+' '+ROLE_INFO[g.roles[id]].n+' · '+(g.alive[id]?'생존':'사망'),winners);
+    return true;
+  },
+  leave(pid){
+    const g=S.g;if(!g.roles[pid])return;
+    if(g.alive[pid]){g.alive[pid]=false;g.log.push('🚪 '+this.nm(pid)+' 님이 퇴사(나감)했습니다.');}
+    if(this.winCheck())return;
+    if(g.stage==='night'&&this.needs(g).every(id=>g.act[id]))this.advance();
+    else if(g.stage==='vote'&&this.aliveIds(g).every(id=>g.votes[id]))this.advance();
+  },
+  /* 비밀 정보 가리기: 살아 있는 사람은 자기 직업(마피아는 동료까지)과 자기 기록만 받아요 */
+  viewFor(pid){
+    const g=S.g,v=JSON.parse(JSON.stringify(g));
+    const me=g.roles[pid],seeAll=S.phase!=='game'||!me||!g.alive[pid];
+    if(seeAll)return v;
+    const roles={};roles[pid]=me;
+    Object.keys(g.revealed).forEach(id=>roles[id]=g.roles[id]);
+    if(me==='mafia')g.order.forEach(id=>{if(g.roles[id]==='mafia')roles[id]='mafia';});
+    v.roles=roles;
+    v.priv={};v.priv[pid]=g.priv[pid]||[];
+    const act={};
+    g.order.forEach(id=>{if(g.act[id]&&(id===pid||(me==='mafia'&&g.roles[id]==='mafia')))act[id]=g.act[id];});
+    v.act=act;
+    if(g.stage==='vote'){const vs={};Object.keys(g.votes).forEach(id=>vs[id]=id===pid?g.votes[id]:'?');v.votes=vs;}
+    v.soldierUsed=false;
+    return v;
+  },
+  view(){return isHost?this.viewFor(myId):S.g;},
+  chatScope(pid,g){ // null=대화 불가, ''=전체, 'mafia', 'dead'
+    if(S.phase!=='game')return '';
+    if(!g.roles[pid]||!g.alive[pid])return 'dead';
+    if(g.stage==='night')return g.roles[pid]==='mafia'?'mafia':null;
+    return '';
+  },
+  canSee(c,pid){
+    const g=S.g;
+    if(!g.roles[pid]||!g.alive[pid])return true; // 사망자·관전자는 전부 봐요
+    return c.to==='mafia'&&g.roles[pid]==='mafia';
+  },
+  myTurn(){
+    if(!S||S.phase!=='game')return false;
+    const g=this.view();if(!g.alive[myId])return false;
+    if(g.stage==='night')return this.needs(g).includes(myId)&&!g.act[myId];
+    if(g.stage==='vote')return !g.votes[myId];
+    return false;
+  },
+  formula(){return '=VLOOKUP("'+myName+'",인사평가!A2:C11,3,FALSE)';},
+  render(){
+    const g=this.view(),me=g.roles[myId],alive=!!g.alive[myId],st=S.phase==='game'?g.stage:'end';
+    const nm=id=>esc(g.names[id]||'?');
+    const al=this.aliveIds(g);
+    const heads={role:'📋 인사 발령 — 내 직업 확인',night:'🌙 '+g.day+'번째 밤 (야근 중)',day:'☀️ '+g.day+'일차 낮 — 토론',vote:'🗳️ '+g.day+'일차 — 해고 투표',exec:'⚖️ 투표 결과 발표',end:'📊 최종 결과'};
+    let h='<div class="row'+(st==='night'?' mf-night':'')+'"><div class="sec"><div class="ttl">인사 평가표 — '+heads[st]+'</div>';
+    h+='<div class="bar">';
+    if(S.phase==='game')h+='<span>남은 시간 <span data-dl="'+g.deadline+'"></span></span>';
+    if(isHost&&st==='role')h+='<button class="xb" data-a="mrole">바로 밤으로</button>';
+    h+='</div>';
+    // 내 직업 카드
+    if(me){
+      const R=ROLE_INFO[me];
+      h+='<div class="mf-role'+(me==='mafia'?' m':'')+'"><div class="rn">'+R.e+' '+R.n+(alive?'':' <span style="color:#7f7f7f;font-size:14px">(사망)</span>')+'</div><div>'+R.d+'</div>';
+      if(me==='mafia'){const mates=g.order.filter(id=>id!==myId&&g.roles[id]==='mafia');h+='<div style="margin-top:4px">동료 마피아: <b>'+(mates.map(id=>nm(id)+(g.alive[id]?'':' (사망)')).join(', ')||'없음')+'</b></div>';}
+      if(!alive&&S.phase==='game')h+='<div style="margin-top:4px;color:#7f7f7f">☠️ 사망했어요. 이제 모든 직업과 대화가 보여요. 산 사람에게 알려주면 안 돼요!</div>';
+      h+='</div>';
+    }else h+='<div class="mf-role">👀 관전 중이에요. 모든 직업과 대화가 보여요.</div>';
+    // 단계별 행동
+    const btn=(a,id,label,sel,dis)=>'<button class="xb'+(sel?' sel':'')+'" data-a="'+a+'" data-v="'+id+'"'+(dis?' disabled':'')+'>'+label+'</button>';
+    if(st==='night'){
+      if(alive&&this.needs(g).includes(myId)){
+        const verb={mafia:'제거할 사람',police:'조사할 사람',doctor:'지킬 사람',medium:'직업을 확인할 죽은 사람'}[me];
+        h+='<div class="sub">'+verb+'을(를) 고르세요</div><div class="mf-btns">';
+        g.order.filter(id=>this.validTarget(g,myId,id)).forEach(id=>{h+=btn('mact',id,nm(id)+(id===myId?' (나)':''),g.act[myId]===id);});
+        h+='</div>';
+        if(me==='mafia'){
+          const picks=g.order.filter(id=>id!==myId&&g.roles[id]==='mafia'&&g.alive[id]).map(id=>nm(id)+' → '+(g.act[id]?nm(g.act[id]):'고민 중'));
+          if(picks.length)h+='<div class="hint">동료 선택: '+picks.join(' · ')+' (표가 갈리면 무작위)</div>';
+        }
+      }else if(alive)h+='<div class="mf-ann">🌙 밤입니다. 능력이 있는 사람들이 움직이는 중이에요. 조용히 기다려 주세요.</div>';
+    }
+    if(st==='day'||st==='vote'||st==='exec'||st==='end'){
+      const last=[...g.log].reverse().find(t=>t.startsWith('☀️'));
+      if(last&&st!=='exec')h+='<div class="mf-ann">'+esc(last)+'</div>';
+    }
+    if(st==='day'){
+      const n=al.filter(id=>g.skip[id]).length;
+      h+='<div class="hint">누가 마피아 같은지 메모(채팅)로 토론하세요. 과반수가 찬성하면 바로 투표로 넘어가요.</div><div class="mf-btns">';
+      if(alive)h+=btn('mskip','',(g.skip[myId]?'✔ ':'')+'투표하러 가기 찬성 ('+n+'/'+al.length+')',g.skip[myId]);
+      if(isHost)h+='<button class="xb" data-a="mforce">토론 종료 (방장)</button>';
+      h+='</div>';
+    }
+    if(st==='vote'){
+      const n=Object.keys(g.votes).length;
+      if(alive){
+        h+='<div class="sub">해고할 사람에게 투표하세요 ('+n+'/'+al.length+'명 투표)</div><div class="mf-btns">';
+        al.filter(id=>id!==myId).forEach(id=>{h+=btn('mvote',id,nm(id)+(g.revealed[id]?' 🎤':''),g.votes[myId]===id);});
+        h+=btn('mvote','skip','기권',g.votes[myId]==='skip')+'</div><div class="hint">최다 득표자가 해고돼요. 동점이거나 기권이 더 많으면 아무도 해고되지 않아요.</div>';
+      }else h+='<div class="hint">투표 진행 중 ('+n+'/'+al.length+'명)</div>';
+    }
+    if(st==='exec')h+='<div class="mf-ann">⚖️ '+esc(g.execMsg)+'</div><div class="hint">곧 밤이 됩니다…</div>';
+    // 나만 보는 기록
+    const pv=(g.priv&&g.priv[myId])||[];
+    if(pv.length)h+='<div class="sub">🔒 나만 보는 기록</div><table class="xt">'+pv.map(t=>'<tr><td>'+esc(t)+'</td></tr>').join('')+'</table>';
+    h+='</div>';
+    // 직원 명단
+    h+='<div class="sec"><div class="ttl">직원 명단</div><table class="xt"><tr><th>이름</th><th>상태</th><th>직업</th>'+(g.lastVotes?'<th>지난 투표</th>':'')+'</tr>';
+    g.order.forEach(id=>{
+      const r=g.roles[id];
+      const rl=r?ROLE_INFO[r].e+' '+ROLE_INFO[r].n:'?';
+      const lv=g.lastVotes?(g.lastVotes[id]?(g.lastVotes[id]==='skip'?'기권':'→ '+nm(g.lastVotes[id])):(g.alive[id]||st==='exec'?'미투표':'')):null;
+      h+='<tr class="'+(g.alive[id]?'':'dead')+'"><td><span class="dot" style="background:'+pcol(id)+'"></span>'+(P(id)?nameHTML(id):nm(id))+(id===myId?' (나)':'')+'</td><td>'+(g.alive[id]?'근무 중':'☠️ 퇴장')+'</td><td>'+rl+'</td>'+(lv!==null?'<td>'+lv+'</td>':'')+'</tr>';
+    });
+    h+='</table>';
+    h+='<div class="sub">📰 사내 소식</div><table class="xt">'+[...g.log].reverse().slice(0,12).map(t=>'<tr><td>'+esc(t)+'</td></tr>').join('')+'</table>';
+    const comp=MAFIA_SETUP[g.order.length]||[];
+    const cnt={};comp.forEach(r=>cnt[r]=(cnt[r]||0)+1);
+    h+='<div class="hint">이번 판 구성: '+Object.keys(cnt).map(r=>ROLE_INFO[r].n+(cnt[r]>1?' '+cnt[r]:'')).join(' · ')+'</div>';
+    h+='</div></div>';
+    return h;
+  }
+};
+
+const GAMES={mine:MINE,bingo:BINGO,word:WORD,omok:OMOK,mafia:MAFIA};
 
 /* ===================== 화면 ===================== */
 function homeHTML(){
@@ -729,11 +1096,12 @@ function homeHTML(){
   '<tr><td>새 회의실</td><td colspan="2"><button class="xb pri" data-a="create">방 만들기</button></td></tr>'+
   '<tr><td>방 코드</td><td><input id="codeIn" class="xi short" maxlength="8" value="'+rc+'" placeholder="예: K7M2Q" autocomplete="off"></td><td><button class="xb" data-a="join">참가</button></td></tr>'+
   '</table></div><div class="sec"><div class="ttl">비고</div><table class="xt"><tr><th>No</th><th>안내</th></tr>'+
-  '<tr><td>1</td><td>최대 6명, 2명부터 바로 할 수 있어요 (지뢰찾기는 혼자도 가능)</td></tr>'+
-  '<tr><td>2</td><td>게임: 지뢰찾기 대전 · 빙고 · 끝말잇기</td></tr>'+
+  '<tr><td>1</td><td>최대 10명, 2명부터 바로 할 수 있어요 (지뢰찾기는 혼자도, 마피아는 6명부터)</td></tr>'+
+  '<tr><td>2</td><td>게임: 지뢰찾기 대전 · 빙고 · 끝말잇기 · 오목</td></tr>'+
   '<tr><td>3</td><td><b>ESC</b> = 업무 화면으로 즉시 전환 (한 번 더 누르면 복귀)</td></tr>'+
   '<tr><td>4</td><td>방장이 창을 닫으면 회의실이 사라져요</td></tr>'+
-  '<tr><td>5</td><td><a href="guide.html" target="_blank">게임 안내</a> · <a href="privacy.html" target="_blank">개인정보처리방침</a></td></tr></table></div></div>';
+  '<tr><td>5</td><td><a href="guide.html" target="_blank">게임 안내</a> · <a href="privacy.html" target="_blank">개인정보처리방침</a></td></tr></table>'+
+  '<div class="dcard"><span>☕ 재밌게 즐기셨다면 개발자에게 커피 한 잔!</span><button class="xb pri" data-a="donate">후원하기</button></div></div></div>';
 }
 function lobbyHTML(){
   let h='<div class="row"><div class="sec"><div class="ttl">참가자 명단</div><table class="xt"><tr><th>No</th><th>이름</th><th>구분</th><th>누적 승리</th></tr>';
@@ -742,7 +1110,7 @@ function lobbyHTML(){
   h+='</table><div class="sub">회의실 정보</div><div class="bar">방 코드 <b style="font-size:18px;letter-spacing:2px;color:#217346">'+esc(S.code)+'</b><button class="xb" data-a="copy">초대 링크 복사</button><button class="xb" data-a="leave">나가기</button></div></div>';
   h+='<div class="sec"><div class="ttl">안건 목록</div><table class="xt"><tr><th>게임</th><th>시트</th><th>내용</th><th>인원</th>'+(isHost?'<th></th>':'')+'</tr>';
   Object.entries(GAMES).forEach(([k,G])=>{
-    h+='<tr><td><b>'+G.name+'</b></td><td>'+G.sheet+'</td><td>'+G.desc+'</td><td>'+G.min+'~6명</td>'+(isHost?'<td><button class="xb pri" data-a="start" data-v="'+k+'"'+(S.players.length<G.min?' disabled':'')+'>시작</button></td>':'')+'</tr>';
+    h+='<tr><td><b>'+G.name+'</b></td><td>'+G.sheet+'</td><td>'+G.desc+'</td><td>'+(G.min===G.max?G.max+'명':G.min+'~'+(G.max||MAXP)+'명')+'</td>'+(isHost?'<td><button class="xb pri" data-a="start" data-v="'+k+'"'+(S.players.length<G.min||(G.max&&G.min>2&&S.players.length>G.max)?' disabled':'')+'>시작</button></td>':'')+'</tr>';
   });
   h+='</table><div class="hint">'+(isHost?'게임을 골라 시작하세요. 사람이 다 안 와도 시작할 수 있어요.':'방장이 게임을 고르는 중이에요...')+'</div>';
   h+=badgeHTML()+'</div></div>';
@@ -777,6 +1145,8 @@ function myTurn(){
   if(!S||S.phase!=='game'||!S.g)return false;
   if(S.game==='bingo')return S.g.stage==='play'&&S.g.order[S.g.turn]===myId;
   if(S.game==='word')return S.g.order[S.g.turn]===myId;
+  if(S.game==='omok')return OMOK.cur()===myId;
+  if(S.game==='mafia')return MAFIA.myTurn();
   return false;
 }
 function formulaText(){
@@ -811,11 +1181,21 @@ function render(){
   syncAds();
 }
 function renderChat(){
-  const key=S?S.code+'#'+S.chatN:'none';if(key===chatKey)return;chatKey=key;
+  const inp=$('#chatIn');
+  if(!S){
+    if(chatKey!=='none'){chatKey='none';$('#chatLog').innerHTML='<div class="cm sys">회의실에 들어가면 여기서 대화할 수 있어요.</div>';}
+    inp.disabled=true;return;
+  }
+  // 마피아 게임 중에는 상황에 따라 대화 채널이 달라져요
+  let scope='';
+  if(S.phase==='game'&&S.game==='mafia'&&S.g)scope=MAFIA.chatScope(myId,S.g);
+  inp.disabled=scope===null;
+  inp.placeholder=scope===null?'밤에는 조용히… (마피아만 대화 가능)':scope==='mafia'?'🕴️ 마피아끼리 몰래 대화':scope==='dead'?'☠️ 사망자·관전자끼리 대화':'메모 입력 후 Enter';
+  const list=S.chat.filter(c=>chatVisible(c,myId));
+  const key=S.code+'#'+S.chatN+'#'+list.length;if(key===chatKey)return;chatKey=key;
   const log=$('#chatLog');
-  if(!S){log.innerHTML='<div class="cm sys">회의실에 들어가면 여기서 대화할 수 있어요.</div>';$('#chatIn').disabled=true;return;}
-  $('#chatIn').disabled=false;
-  log.innerHTML=S.chat.map(c=>c.sys?'<div class="cm sys">'+esc(c.m)+'</div>':'<div class="cm"><span class="dot" style="background:'+(COLORS[c.c]||'#333')+'"></span>'+fmtName(c.n,c.ti,c.nc)+': '+esc(c.m)+'</div>').join('');
+  const tag=c=>c.to==='mafia'?'<b style="color:#c00000">[마피아]</b> ':c.to==='dead'?'<b style="color:#7f7f7f">[사망자]</b> ':'';
+  log.innerHTML=list.map(c=>c.sys?'<div class="cm sys">'+esc(c.m)+'</div>':'<div class="cm'+(c.to?' ch-'+c.to:'')+'">'+tag(c)+'<span class="dot" style="background:'+(COLORS[c.c]||'#333')+'"></span>'+fmtName(c.n,c.ti,c.nc)+': '+esc(c.m)+'</div>').join('');
   log.scrollTop=log.scrollHeight;
 }
 function tick(){
@@ -840,10 +1220,14 @@ setInterval(tick,200);
 
 /* ===================== 광고 ===================== */
 const adsOK=()=>typeof window.adBreak==='function';
-function adPreroll(){if(!adsOK())return;try{adConfig({preloadAdBreaks:'on',sound:'off'});adBreak({type:'preroll',adBreakDone:()=>{}});}catch(e){}}
-function adNext(){ // 판이 끝나고 로비로 돌아올 때
-  if(!adsOK()||document.body.classList.contains('boss'))return;
-  try{adBreak({type:'next',name:'back_to_lobby',beforeAd:()=>{},afterAd:()=>{},adBreakDone:()=>{}});}catch(e){}
+function adInit(){if(!adsOK())return;try{adConfig({preloadAdBreaks:'on',sound:'off'});}catch(e){}}
+// 전면 광고: 방에 입장할 때(start), 판이 끝나고 로비로 돌아올 때(next). 광고가 끝나면 승진 광고를 준비해요
+function interstitial(type,name){
+  let done=false;
+  const after=()=>{if(done)return;done=true;setTimeout(requestReward,800);};
+  if(!adsOK()||document.body.classList.contains('boss')){after();return;}
+  try{adBreak({type,name,beforeAd:()=>{},afterAd:()=>{},adBreakDone:after});}catch(e){after();}
+  setTimeout(after,20000); // 광고 스크립트가 막혀 응답이 없을 때 대비
 }
 function requestReward(){
   if(!adsOK()||rewardPending||rewardShow)return;
@@ -871,8 +1255,11 @@ function requestReward(){
 }
 function syncAds(){
   const ph=S?S.phase:null;
-  if(lastPhase==='result'&&ph==='lobby')adNext();
-  if(ph==='lobby'&&lastPhase!=='lobby')setTimeout(requestReward,2500);
+  if(ph==='lobby'&&lastPhase!=='lobby'){
+    if(lastPhase==null)interstitial('start','enter_room');      // 방 입장
+    else if(lastPhase==='result')interstitial('next','back_to_lobby'); // 다른 게임 고르러 로비 복귀
+    else setTimeout(requestReward,2500);
+  }
   lastPhase=ph;
   // 로비 하단 배너 (AD_SLOT을 넣었을 때만)
   const bar=$('#adBar');const want=!!AD_SLOT&&ph==='lobby';
@@ -925,9 +1312,15 @@ $('#content').addEventListener('click',e=>{
     case 'leave':leaveRoom();break;
     case 'copy':{
       const link=location.origin+location.pathname+'?room='+S.code;
-      const done=()=>msg('초대 링크를 복사했어요: '+link);
-      if(navigator.clipboard)navigator.clipboard.writeText(link).then(done,()=>msg('초대 링크: '+link));else msg('초대 링크: '+link);
+      copyText(link,'초대 링크를 복사했어요: '+link,t);
       break;}
+    case 'donate':openDlg();break;
+    case 'ocell':omokClick(+v);break;
+    case 'mact':act({type:'mact',t:v});break;
+    case 'mvote':act({type:'mvote',t:v});break;
+    case 'mskip':act({type:'mskip'});break;
+    case 'mforce':if(confirm('토론을 끝내고 투표로 넘어갈까요?'))act({type:'mskip',force:1});break;
+    case 'mrole':act({type:'mrole'});break;
     case 'start':act({type:'start',game:v});break;
     case 'again':act({type:'start',game:S.game});break;
     case 'lobby':act({type:'lobby'});break;
@@ -954,14 +1347,34 @@ $('#content').addEventListener('change',e=>{
 });
 function openDlg(){$('#dlg').hidden=false;}
 function closeDlg(){$('#dlg').hidden=true;}
-$('#donateBtn').onclick=$('#helpTab').onclick=openDlg;
+$('#donateBtn').onclick=$('#helpTab').onclick=$('#shareBtn').onclick=openDlg;
 $('#dlgX').onclick=$('#dlgClose').onclick=closeDlg;
 $('#dlg').addEventListener('click',e=>{if(e.target.id==='dlg')closeDlg();});
-$('#dlgCopy').onclick=()=>{
-  const done=()=>msg('계좌번호를 복사했어요. (카카오뱅크 '+ACCOUNT_NO+' 이윤익)');
-  if(navigator.clipboard)navigator.clipboard.writeText(ACCOUNT_NO).then(done,()=>msg('카카오뱅크 '+ACCOUNT_NO+' 이윤익'));
-  else msg('카카오뱅크 '+ACCOUNT_NO+' 이윤익');
-};
+// 클릭 즉시 복사: 옛 방식(execCommand)을 먼저 쓰고, 안 되면 클립보드 API로. 버튼에 바로 "복사됨" 표시
+function copyText(text,okMsg,btn){
+  let ok=false;
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=text;ta.setAttribute('readonly','');
+    ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0';
+    document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,text.length);
+    ok=document.execCommand('copy');
+    document.body.removeChild(ta);
+  }catch(e){}
+  const done=s=>{
+    if(!s){msg('자동 복사가 막혀 있어요. 직접 선택해서 복사해 주세요: '+text);return;}
+    if(okMsg)msg(okMsg);
+    if(btn){
+      if(!btn.dataset.orig)btn.dataset.orig=btn.textContent;
+      btn.textContent='✔ 복사됨';btn.classList.add('done');
+      clearTimeout(btn._t);btn._t=setTimeout(()=>{btn.textContent=btn.dataset.orig;btn.classList.remove('done');},1800);
+    }
+  };
+  if(ok)done(true);
+  else if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>done(true),()=>done(false));
+  else done(false);
+}
+$('#dlgCopy').onclick=e=>copyText(ACCOUNT_NO,null,e.currentTarget);
 $('#content').addEventListener('contextmenu',e=>{
   const t=e.target.closest('[data-a="mcell"]');
   if(t){e.preventDefault();mineClick(+t.dataset.v,true);}
@@ -983,6 +1396,6 @@ if(window.innerWidth<760)document.body.classList.add('nomemo');
 loadCosm();
 buildBoss();
 render();
-adPreroll();
+adInit();
 </script>
 </body>
