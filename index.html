@@ -103,6 +103,7 @@ body.nomemo #side{display:none}
 .xb:hover{background:#e5f1fb;border-color:#0078d4}
 .xb.pri{background:var(--green);color:#fff;border-color:#1a5c38}
 .xb.pri:hover{background:#1a5c38}
+.xb:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(1)}
 .xb.on{background:#c6efce;border-color:#00a050;color:#006100}
 .xi{font:inherit;border:1px solid var(--green);height:21px;padding:0 5px;outline:none;width:150px;background:#fff}
 .xi.short{width:110px;text-transform:uppercase}
@@ -1147,12 +1148,12 @@ function lobbyHTML(){
   S.players.forEach((p,i)=>{h+='<tr><td>'+(i+1)+'</td><td><span class="dot" style="background:'+COLORS[p.color]+'"></span>'+fmtName(p.name,p.ti,p.nc)+(p.id===myId?' (나)':'')+'</td><td>'+(p.id===S.hostId?'방장':'참석')+'</td><td>'+p.wins+'</td></tr>';});
   for(let i=S.players.length;i<MAXP;i++)h+='<tr><td>'+(i+1)+'</td><td style="color:#999">(빈 자리)</td><td></td><td></td></tr>';
   h+='</table><div class="sub">회의실 정보</div><div class="bar">방 코드 <b style="font-size:18px;letter-spacing:2px;color:#217346">'+esc(S.code)+'</b><button class="xb" data-a="copy">초대 링크 복사</button><button class="xb" data-a="leave">나가기</button></div></div>';
-  h+='<div class="sec"><div class="ttl">안건 목록</div><table class="xt"><tr><th>게임</th><th>시트</th><th>내용</th><th>인원</th>'+(isHost?'<th></th>':'')+'</tr>';
+  h+='<div class="sec"><div class="ttl">안건 목록</div><table class="xt"><tr><th>게임</th>'+(isHost?'<th>시작</th>':'')+'<th>인원</th><th>시트</th><th>내용</th></tr>';
   Object.entries(GAMES).forEach(([k,G])=>{
-    h+='<tr><td><b>'+G.name+'</b></td><td>'+G.sheet+'</td><td>'+G.desc+'</td><td>'+(G.min===G.max?G.max+'명':G.min+'~'+(G.max||MAXP)+'명')+'</td>'+(isHost?'<td><button class="xb pri" data-a="start" data-v="'+k+'"'+(S.players.length<G.min||(G.max&&G.min>2&&S.players.length>G.max)?' disabled':'')+'>시작</button></td>':'')+'</tr>';
+    h+='<tr><td><b>'+G.name+'</b></td>'+(isHost?'<td><button class="xb pri" data-a="start" data-v="'+k+'"'+(S.players.length<G.min||(G.max&&G.min>2&&S.players.length>G.max)?' disabled':'')+'>시작</button></td>':'')+'<td>'+(G.min===G.max?G.max+'명':G.min+'~'+(G.max||MAXP)+'명')+'</td><td>'+G.sheet+'</td><td>'+G.desc+'</td></tr>';
   });
   h+='</table><div class="hint">'+(isHost?'게임을 골라 시작하세요. 사람이 다 안 와도 시작할 수 있어요.':'방장이 게임을 고르는 중이에요...')+'</div>';
-  h+='</div></div>';
+  h+=badgeHTML()+'</div></div>';
   return h;
 }
 function badgeHTML(){
@@ -1244,7 +1245,7 @@ function tick(){
     const r=Math.max(0,+el.dataset.cd-Date.now());
     el.textContent=Math.floor(r/60000)+':'+String(Math.floor(r/1000)%60).padStart(2,'0');
   });
-  if(!S&&rewardGate().ok&&cdUntil!==-1&&document.querySelector('[data-cd]')){cdUntil=-1;lastHTML=null;render();requestReward();}
+  if((!S||S.phase==='lobby')&&rewardGate().ok&&cdUntil!==-1&&document.querySelector('[data-cd]')){cdUntil=-1;lastHTML=null;render();requestReward();}
   if(!document.querySelector('[data-cd]'))cdUntil=0;
   document.querySelectorAll('[data-dl]').forEach(el=>{
     const r=(+el.dataset.dl-nowH())/1000;
@@ -1271,7 +1272,7 @@ function adInit(){if(!adsOK())return;try{adConfig({preloadAdBreaks:'on',sound:'o
 // 전면 광고: 방에 입장할 때(start), 판이 끝나고 로비로 돌아올 때(next). 광고가 끝나면 승진 광고를 준비해요
 function interstitial(type,name){
   let done=false;
-  const after=()=>{done=true;};
+  const after=()=>{if(done)return;done=true;setTimeout(requestReward,800);};
   if(!adsOK()||document.body.classList.contains('boss')){after();return;}
   try{adBreak({type,name,beforeAd:()=>{},afterAd:()=>{},adBreakDone:after});}catch(e){after();}
   setTimeout(after,20000); // 광고 스크립트가 막혀 응답이 없을 때 대비
