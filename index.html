@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>통합 문서1 - Excel</title>
+<meta name="description" content="회사에서 몰래 즐기는 엑셀 화면 멀티플레이 미니게임. 지뢰찾기 대전·빙고·끝말잇기·오목·마피아, 최대 10명. ESC 한 번이면 업무 화면으로!">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="엑셀 미니게임">
+<meta property="og:title" content="엑셀 미니게임 - 일하는 척하면서 같이 놀기">
+<meta property="og:description" content="지뢰찾기 대전·빙고·끝말잇기·오목·마피아 | 최대 10명 | ESC 누르면 바로 업무 화면">
+<meta property="og:image" content="https://yunikism.kr/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://yunikism.kr/">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%23217346'/%3E%3Cpath d='M9 8l14 16M23 8L9 24' stroke='white' stroke-width='4'/%3E%3C/svg%3E">
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <!-- Google AdSense (H5 게임 광고). 승인 후 data-adbreak-test="on" 을 지우면 실제 광고가 나와요 -->
@@ -179,6 +189,14 @@ body.boss #shareBtn{display:none}
 #dlgCopy.done{background:#00a050;border-color:#00804a}
 .dcard{border:2px solid #ffd966;background:#fffbea;padding:8px 12px;margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px}
 #helpTab{cursor:pointer}
+.glist div{line-height:24px;white-space:nowrap}
+.glist span{color:#595959;font-size:12px}
+.esccard{border:2px solid #c00000;background:#fff5f5;padding:10px 14px;margin-top:14px;max-width:520px;font-size:13px;line-height:1.7}
+.esctop{display:flex;align-items:center;gap:10px;font-size:16px;color:#c00000;margin-bottom:4px}
+.esccard .key,.key{display:inline-block;background:#fff;border:2px solid #333;border-bottom-width:5px;border-radius:7px;padding:0 10px;font-family:Consolas,monospace;font-weight:700;font-size:15px;color:#222;line-height:24px}
+.esccard .xb{margin-top:6px}
+#escChip{background:#fff2cc;color:#7f6000;font-weight:600}
+body.boss #escChip,body.boss #donateBtn{display:none}
 #helpTab:hover{background:rgba(255,255,255,.15)}
 @media (max-width:760px){
  #ribbon{height:auto}.rg:nth-child(n+3){display:none}.tb-search{display:none}
@@ -231,7 +249,7 @@ body.boss #shareBtn{display:none}
   <div class="dft"><button class="xb pri" id="dlgCopy">계좌번호 복사</button><button class="xb" id="dlgClose">닫기</button></div>
 </div></div>
 <div id="tabs"><span class="tnav">◀</span><span class="tnav">▶</span><span id="tabList" style="display:flex"></span><span class="tadd">⊕</span></div>
-<div id="statusbar"><span id="stL">준비</span><span id="stR"></span><span class="stBtn" id="donateBtn">☕ 후원</span><span class="stBtn" id="memoBtn">💬 메모</span><span>▦ ▤ ▥</span><span>─────●───── 100%</span></div>
+<div id="statusbar"><span id="stL">준비</span><span id="stR"></span><span class="stBtn" id="escChip" title="업무 화면으로 즉시 전환">⎋ ESC = 업무 화면</span><span class="stBtn" id="donateBtn">☕ 후원</span><span class="stBtn" id="memoBtn">💬 메모</span><span>▦ ▤ ▥</span><span>─────●───── 100%</span></div>
 
 <script>
 'use strict';
@@ -248,7 +266,7 @@ const ACCOUNT_NO='3333168333186';
 const TITLES=['인턴','사원','주임','대리','과장','차장','부장','이사','상무','전무','부사장','사장','회장'];
 const NAME_COLORS=['#c00000','#0070c0','#00a050','#7030a0','#ed7d31','#e0218a','#00a3a3','#b8860b','#002060','#ff0000','#7f7f7f','#9900cc','#008080'];
 const cosm={views:0,ti:'',nc:''};
-let rewardShow=null,rewardPending=false,rewardNone=false,lastPhase=undefined,adBarInit=false;
+let escTipShown=false,rewardShow=null,rewardPending=false,rewardNone=false,lastPhase=undefined,adBarInit=false;
 
 let peer=null,isHost=false,myId=null,myName='',hostConn=null,conns={},S=null,clockOff=0;
 let hostTimer=null,lastHTML=null,LM=null,bSel=null,joinTimer=null,chatKey='';
@@ -1087,6 +1105,13 @@ const MAFIA={
 const GAMES={mine:MINE,bingo:BINGO,word:WORD,omok:OMOK,mafia:MAFIA};
 
 /* ===================== 화면 ===================== */
+const HOME_GAMES=[
+  ['💣','지뢰찾기 대전','같은 판을 누가 먼저 다 여나 (1~10명)'],
+  ['🔢','빙고','돌아가며 숫자 부르고 3줄 먼저 완성 (2~10명)'],
+  ['💬','끝말잇기','제한시간 안에 단어 잇기, 두음법칙 OK (2~10명)'],
+  ['⚫','오목','흑백 번갈아 5개 먼저 이으면 승리 (2명)'],
+  ['🕴️','마피아','마피아·경찰·의사·시민, 토론과 투표로 범인 찾기 (6~10명)']
+];
 function homeHTML(){
   const nm=esc(myName||ls('xlsmini-name')||'');
   const rc=esc((new URLSearchParams(location.search).get('room')||'').toUpperCase());
@@ -1096,11 +1121,13 @@ function homeHTML(){
   '<tr><td>새 회의실</td><td colspan="2"><button class="xb pri" data-a="create">방 만들기</button></td></tr>'+
   '<tr><td>방 코드</td><td><input id="codeIn" class="xi short" maxlength="8" value="'+rc+'" placeholder="예: K7M2Q" autocomplete="off"></td><td><button class="xb" data-a="join">참가</button></td></tr>'+
   '</table></div><div class="sec"><div class="ttl">비고</div><table class="xt"><tr><th>No</th><th>안내</th></tr>'+
-  '<tr><td>1</td><td>최대 10명, 2명부터 바로 할 수 있어요 (지뢰찾기는 혼자도, 마피아는 6명부터)</td></tr>'+
-  '<tr><td>2</td><td>게임: 지뢰찾기 대전 · 빙고 · 끝말잇기 · 오목</td></tr>'+
-  '<tr><td>3</td><td><b>ESC</b> = 업무 화면으로 즉시 전환 (한 번 더 누르면 복귀)</td></tr>'+
-  '<tr><td>4</td><td>방장이 창을 닫으면 회의실이 사라져요</td></tr>'+
-  '<tr><td>5</td><td><a href="guide.html" target="_blank">게임 안내</a> · <a href="privacy.html" target="_blank">개인정보처리방침</a></td></tr></table>'+
+  '<tr><td>1</td><td>최대 10명, 2명부터 바로 할 수 있어요</td></tr>'+
+  '<tr><td style="vertical-align:top;padding-top:3px">2</td><td class="glist">'+HOME_GAMES.map(x=>'<div><b>'+x[0]+' '+x[1]+'</b> <span>'+x[2]+'</span></div>').join('')+'</td></tr>'+
+  '<tr><td>3</td><td>방장이 창을 닫으면 회의실이 사라져요</td></tr>'+
+  '<tr><td>4</td><td><a href="guide.html" target="_blank">게임 안내</a> · <a href="privacy.html" target="_blank">개인정보처리방침</a></td></tr></table>'+
+  '<div class="esccard"><div class="esctop"><span class="key">ESC</span><b>비상 탈출 버튼</b></div>'+
+  '<div>누가 다가오면 <b>ESC 한 번!</b> 게임 화면이 순식간에 <b>4분기 매출 집계표</b>로 바뀌어요.<br>한 번 더 누르면 하던 게임으로 그대로 돌아와요. 게임은 계속 진행 중!</div>'+
+  '<button class="xb" data-a="tryesc">👀 지금 눌러보기</button></div>'+
   '<div class="dcard"><span>☕ 재밌게 즐기셨다면 개발자에게 커피 한 잔!</span><button class="xb pri" data-a="donate">후원하기</button></div></div></div>';
 }
 function lobbyHTML(){
@@ -1256,7 +1283,7 @@ function requestReward(){
 function syncAds(){
   const ph=S?S.phase:null;
   if(ph==='lobby'&&lastPhase!=='lobby'){
-    if(lastPhase==null)interstitial('start','enter_room');      // 방 입장
+    if(lastPhase==null){interstitial('start','enter_room');if(!escTipShown){escTipShown=true;setTimeout(()=>msg('💡 팁: 누가 다가오면 ESC! 바로 매출 집계표로 바뀌고, 한 번 더 누르면 돌아와요.'),1500);}} // 방 입장
     else if(lastPhase==='result')interstitial('next','back_to_lobby'); // 다른 게임 고르러 로비 복귀
     else setTimeout(requestReward,2500);
   }
@@ -1315,6 +1342,7 @@ $('#content').addEventListener('click',e=>{
       copyText(link,'초대 링크를 복사했어요: '+link,t);
       break;}
     case 'donate':openDlg();break;
+    case 'tryesc':toggleBoss();break;
     case 'ocell':omokClick(+v);break;
     case 'mact':act({type:'mact',t:v});break;
     case 'mvote':act({type:'mvote',t:v});break;
@@ -1387,7 +1415,7 @@ document.addEventListener('keydown',e=>{
   else if(id==='wIn')sendWord();
   else if(id==='chatIn'){const v=e.target.value.trim();if(v&&S){act({type:'chat',m:v});e.target.value='';}}
 });
-$('#bossBtn').onclick=toggleBoss;
+$('#bossBtn').onclick=$('#escChip').onclick=toggleBoss;
 $('#msgx').onclick=()=>{$('#msgbar').hidden=true;};
 $('#memoBtn').onclick=$('#sideX').onclick=()=>document.body.classList.toggle('nomemo');
 window.addEventListener('beforeunload',()=>{try{peer&&peer.destroy();}catch(e){}});
