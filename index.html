@@ -266,6 +266,18 @@ const ACCOUNT_NO='3333168333186';
 const TITLES=['인턴','사원','주임','대리','과장','차장','부장','이사','상무','전무','부사장','사장','회장'];
 const NAME_COLORS=['#c00000','#0070c0','#00a050','#7030a0','#ed7d31','#e0218a','#00a3a3','#b8860b','#002060','#ff0000','#7f7f7f','#9900cc','#008080'];
 const cosm={views:0,ti:'',nc:''};
+const REWARD_COOLDOWN=3*60*1000; // 승진 광고 사이 최소 간격 (3분)
+const REWARD_DAILY=5;            // 하루 최대 시청 횟수
+let adlog={last:0,day:'',n:0},cdUntil=0;
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function loadAdlog(){try{const o=JSON.parse(ls('xlsmini-adlog')||'{}');adlog={last:+o.last||0,day:o.day||'',n:+o.n||0};}catch(e){}if(adlog.day!==todayKey()){adlog.day=todayKey();adlog.n=0;}}
+function rewardGate(){ // 지금 승진 광고를 볼 수 있는지
+  if(adlog.day!==todayKey()){adlog.day=todayKey();adlog.n=0;}
+  if(adlog.n>=REWARD_DAILY)return {ok:false,daily:true};
+  const wait=adlog.last+REWARD_COOLDOWN-Date.now();
+  if(wait>0)return {ok:false,wait,until:adlog.last+REWARD_COOLDOWN};
+  return {ok:true};
+}
 let escTipShown=false,rewardShow=null,rewardPending=false,rewardNone=false,lastPhase=undefined,adBarInit=false;
 
 let peer=null,isHost=false,myId=null,myName='',hostConn=null,conns={},S=null,clockOff=0;
@@ -1120,7 +1132,7 @@ function homeHTML(){
   '<tr><td>이름</td><td colspan="2"><input id="nameIn" class="xi" maxlength="10" value="'+nm+'" placeholder="닉네임" autocomplete="off"></td></tr>'+
   '<tr><td>새 회의실</td><td colspan="2"><button class="xb pri" data-a="create">방 만들기</button></td></tr>'+
   '<tr><td>방 코드</td><td><input id="codeIn" class="xi short" maxlength="8" value="'+rc+'" placeholder="예: K7M2Q" autocomplete="off"></td><td><button class="xb" data-a="join">참가</button></td></tr>'+
-  '</table></div><div class="sec"><div class="ttl">비고</div><table class="xt"><tr><th>No</th><th>안내</th></tr>'+
+  '</table>'+badgeHTML()+'</div><div class="sec"><div class="ttl">비고</div><table class="xt"><tr><th>No</th><th>안내</th></tr>'+
   '<tr><td>1</td><td>최대 10명, 2명부터 바로 할 수 있어요</td></tr>'+
   '<tr><td style="vertical-align:top;padding-top:3px">2</td><td class="glist">'+HOME_GAMES.map(x=>'<div><b>'+x[0]+' '+x[1]+'</b> <span>'+x[2]+'</span></div>').join('')+'</td></tr>'+
   '<tr><td>3</td><td>방장이 창을 닫으면 회의실이 사라져요</td></tr>'+
@@ -1140,7 +1152,7 @@ function lobbyHTML(){
     h+='<tr><td><b>'+G.name+'</b></td><td>'+G.sheet+'</td><td>'+G.desc+'</td><td>'+(G.min===G.max?G.max+'명':G.min+'~'+(G.max||MAXP)+'명')+'</td>'+(isHost?'<td><button class="xb pri" data-a="start" data-v="'+k+'"'+(S.players.length<G.min||(G.max&&G.min>2&&S.players.length>G.max)?' disabled':'')+'>시작</button></td>':'')+'</tr>';
   });
   h+='</table><div class="hint">'+(isHost?'게임을 골라 시작하세요. 사람이 다 안 와도 시작할 수 있어요.':'방장이 게임을 고르는 중이에요...')+'</div>';
-  h+=badgeHTML()+'</div></div>';
+  h+='</div></div>';
   return h;
 }
 function badgeHTML(){
@@ -1154,12 +1166,14 @@ function badgeHTML(){
   h+='<tr><td>닉네임 색상</td><td style="height:30px"><span class="swatch'+(cosm.nc===''?' on':'')+'" data-a="nc" data-v="" style="background:#222" title="기본"></span> ';
   NAME_COLORS.forEach((c,i)=>{h+='<span class="swatch'+(cosm.nc===c?' on':'')+(i>=n?' lock':'')+'" data-a="nc" data-v="'+c+'" style="background:'+c+'" title="'+(i>=n?TITLES[i]+' 승진 시 해금':'선택')+'"></span> ';});
   h+='</td></tr>';
-  let btn;
-  if(rewardShow)btn='<button class="xb pri" data-a="reward">🎬 광고 보고 승진하기</button>';
+  let btn;const gate=rewardGate();
+  if(gate.daily)btn='<button class="xb" disabled>오늘 승진 심사 끝 ('+REWARD_DAILY+'/'+REWARD_DAILY+')</button> <span class="hint">내일 다시 도전하세요!</span>';
+  else if(!gate.ok)btn='<button class="xb" disabled>⏳ 다음 심사까지 <span data-cd="'+gate.until+'"></span></button>';
+  else if(rewardShow)btn='<button class="xb pri" data-a="reward">🎬 광고 보고 승진하기</button>';
   else if(rewardPending)btn='<button class="xb" disabled>광고 불러오는 중...</button>';
   else btn='<button class="xb" data-a="rewardRetry">🎬 승진 광고 확인</button>'+(rewardNone?' <span class="hint">지금은 볼 수 있는 광고가 없어요. 잠시 후 다시 눌러 주세요.</span>':'');
   h+='<tr><td>승진 심사</td><td>'+btn+'</td></tr></table>';
-  h+='<div class="hint">광고를 끝까지 보면 한 단계 승진해서 새 칭호와 닉네임 색상이 열려요.</div>';
+  h+='<div class="hint">광고를 끝까지 보면 한 단계 승진해서 새 칭호와 닉네임 색상이 열려요.<br>3분에 한 번, 하루 '+REWARD_DAILY+'번까지 · 오늘 '+Math.min(adlog.n,REWARD_DAILY)+'/'+REWARD_DAILY+'회</div>';
   return h;
 }
 function resultHTML(){
@@ -1226,6 +1240,12 @@ function renderChat(){
   log.scrollTop=log.scrollHeight;
 }
 function tick(){
+  document.querySelectorAll('[data-cd]').forEach(el=>{
+    const r=Math.max(0,+el.dataset.cd-Date.now());
+    el.textContent=Math.floor(r/60000)+':'+String(Math.floor(r/1000)%60).padStart(2,'0');
+  });
+  if(!S&&rewardGate().ok&&cdUntil!==-1&&document.querySelector('[data-cd]')){cdUntil=-1;lastHTML=null;render();requestReward();}
+  if(!document.querySelector('[data-cd]'))cdUntil=0;
   document.querySelectorAll('[data-dl]').forEach(el=>{
     const r=(+el.dataset.dl-nowH())/1000;
     el.textContent=Math.max(0,Math.ceil(r))+'초';
@@ -1251,13 +1271,13 @@ function adInit(){if(!adsOK())return;try{adConfig({preloadAdBreaks:'on',sound:'o
 // 전면 광고: 방에 입장할 때(start), 판이 끝나고 로비로 돌아올 때(next). 광고가 끝나면 승진 광고를 준비해요
 function interstitial(type,name){
   let done=false;
-  const after=()=>{if(done)return;done=true;setTimeout(requestReward,800);};
+  const after=()=>{done=true;};
   if(!adsOK()||document.body.classList.contains('boss')){after();return;}
   try{adBreak({type,name,beforeAd:()=>{},afterAd:()=>{},adBreakDone:after});}catch(e){after();}
   setTimeout(after,20000); // 광고 스크립트가 막혀 응답이 없을 때 대비
 }
 function requestReward(){
-  if(!adsOK()||rewardPending||rewardShow)return;
+  if(!adsOK()||rewardPending||rewardShow||!rewardGate().ok)return;
   rewardPending=true;rewardNone=false;render();
   let shown=false,finished=false;
   // 광고 차단기 등으로 응답이 없으면 8초 뒤 버튼을 되살려요
@@ -1268,6 +1288,7 @@ function requestReward(){
       beforeAd:()=>{},afterAd:()=>{},
       adDismissed:()=>{msg('광고를 끝까지 봐야 승진할 수 있어요.');},
       adViewed:()=>{
+        adlog.last=Date.now();adlog.n++;ls('xlsmini-adlog',JSON.stringify(adlog));
         const before=unlockedN();cosm.views++;const n=unlockedN();
         if(n>before){cosm.ti=TITLES[n-1];if(!cosm.nc)cosm.nc=NAME_COLORS[n-1];msg('🎉 '+TITLES[n-1]+'(으)로 승진했어요! 새 칭호와 색상이 열렸어요.');}
         else msg('🎉 광고 시청 완료! 이미 최고 직급이에요.');
@@ -1285,8 +1306,8 @@ function syncAds(){
   if(ph==='lobby'&&lastPhase!=='lobby'){
     if(lastPhase==null){interstitial('start','enter_room');if(!escTipShown){escTipShown=true;setTimeout(()=>msg('💡 팁: 누가 다가오면 ESC! 바로 매출 집계표로 바뀌고, 한 번 더 누르면 돌아와요.'),1500);}} // 방 입장
     else if(lastPhase==='result')interstitial('next','back_to_lobby'); // 다른 게임 고르러 로비 복귀
-    else setTimeout(requestReward,2500);
   }
+  if(ph===null&&lastPhase!==null)setTimeout(requestReward,2500); // 첫 화면(사원증)에서 승진 광고 준비
   lastPhase=ph;
   // 로비 하단 배너 (AD_SLOT을 넣었을 때만)
   const bar=$('#adBar');const want=!!AD_SLOT&&ph==='lobby';
@@ -1422,6 +1443,7 @@ window.addEventListener('beforeunload',()=>{try{peer&&peer.destroy();}catch(e){}
 if(window.innerWidth<760)document.body.classList.add('nomemo');
 
 loadCosm();
+loadAdlog();
 buildBoss();
 render();
 adInit();
