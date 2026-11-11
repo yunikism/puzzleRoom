@@ -6,6 +6,9 @@
 <title>통합 문서1 - Excel</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%23217346'/%3E%3Cpath d='M9 8l14 16M23 8L9 24' stroke='white' stroke-width='4'/%3E%3C/svg%3E">
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<!-- Google AdSense (H5 게임 광고). 승인 후 data-adbreak-test="on" 을 지우면 실제 광고가 나와요 -->
+<script async data-adbreak-test="on" data-ad-frequency-hint="60s" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6056528810711682" crossorigin="anonymous"></script>
+<script>window.adsbygoogle=window.adsbygoogle||[];var adBreak=adConfig=function(o){adsbygoogle.push(o);};</script>
 <style>
 :root{--green:#217346;--grid:#e2e2e2;--hdr:#f3f3f3;--hdrb:#cfcfcf}
 [hidden]{display:none!important}
@@ -128,6 +131,25 @@ body.nomemo #side{display:none}
 .bt td.n{text-align:right}
 .bt tr.h td{font-weight:700;border-bottom:1px solid #000}
 .bt tr.s td{font-weight:700;border-top:3px double #000}
+/* ads / cosmetics / dialog */
+#adBar{flex:none;background:#fafafa;border-top:1px solid #d4d4d4;text-align:center;padding:4px 0;min-height:60px}
+body.boss #adBar{display:none!important}
+.swatch{display:inline-block;width:20px;height:20px;border:2px solid #fff;outline:1px solid #bbb;cursor:pointer;vertical-align:middle}
+.swatch.on{outline:2px solid #222}
+.swatch.lock{opacity:.25;cursor:not-allowed}
+.ttag{font-size:11px;color:#7f6000;background:#fff2cc;border:1px solid #ffd966;padding:0 3px;margin-right:3px;font-weight:600}
+.xs{font:inherit;font-size:12px;height:22px;border:1px solid #adadad;background:#fff}
+#dlg{position:fixed;inset:0;background:rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;z-index:50}
+body.boss #dlg{display:none!important}
+.dbox{background:#fff;border:1px solid #8a8a8a;box-shadow:0 8px 28px rgba(0,0,0,.3);width:340px;max-width:calc(100vw - 32px)}
+.dhd{background:var(--green);color:#fff;font-size:12px;padding:6px 10px;display:flex;justify-content:space-between}
+.dhd span:last-child{cursor:pointer}
+.dbd{padding:16px;font-size:13px;line-height:1.7}
+.acct{background:#f3f3f3;border:1px solid #d4d4d4;padding:8px 10px;margin:10px 0;font-size:14px}
+.acct b{font-size:16px;letter-spacing:1px}
+.dft{padding:0 16px 14px;text-align:right;display:flex;gap:6px;justify-content:flex-end}
+#helpTab{cursor:pointer}
+#helpTab:hover{background:rgba(255,255,255,.15)}
 @media (max-width:760px){
  #ribbon{height:auto}.rg:nth-child(n+3){display:none}.tb-search{display:none}
  #side{position:absolute;right:0;top:0;bottom:0;z-index:5;box-shadow:-2px 0 8px rgba(0,0,0,.15)}
@@ -142,7 +164,7 @@ body.nomemo #side{display:none}
   <span><span class="tb-btn" id="bossBtn" title="업무 화면 전환 (ESC)">─</span><span class="tb-btn">□</span><span class="tb-btn">✕</span></span>
 </div>
 <div id="ribbonTabs">
-  <span class="rt">파일</span><span class="rt on">홈</span><span class="rt">삽입</span><span class="rt">그리기</span><span class="rt">페이지 레이아웃</span><span class="rt">수식</span><span class="rt">데이터</span><span class="rt">검토</span><span class="rt">보기</span><span class="rt">도움말</span>
+  <span class="rt">파일</span><span class="rt on">홈</span><span class="rt">삽입</span><span class="rt">그리기</span><span class="rt">페이지 레이아웃</span><span class="rt">수식</span><span class="rt">데이터</span><span class="rt">검토</span><span class="rt">보기</span><span class="rt" id="helpTab">도움말</span>
 </div>
 <div id="ribbon">
   <div class="rg"><div class="it"><div class="rb"><span class="ic">📋</span>붙여넣기</div><div class="col"><span class="rs">✂ 잘라내기</span><span class="rs">⎘ 복사</span><span class="rs">🖌 서식 복사</span></div></div><div class="lb">클립보드</div></div>
@@ -166,8 +188,19 @@ body.nomemo #side{display:none}
     <div id="chatBox"><input id="chatIn" placeholder="메모 입력 후 Enter" maxlength="200" autocomplete="off"></div>
   </div>
 </div>
+<div id="adBar" hidden></div>
+<div id="dlg" hidden><div class="dbox">
+  <div class="dhd"><span>Microsoft Excel</span><span id="dlgX">✕</span></div>
+  <div class="dbd">
+    <b>☕ 개발자 후원</b><br>
+    재밌게 즐기셨다면 커피 한 잔 값으로 응원해 주세요. 서버비와 새 게임 개발에 쓰여요.
+    <div class="acct">카카오뱅크<br><b>3333-16-8333186</b><br>예금주 이윤익</div>
+    <span style="font-size:12px;color:#666">게임 방법 · 개인정보처리방침: <a href="guide.html" target="_blank">게임 안내</a> · <a href="privacy.html" target="_blank">개인정보처리방침</a></span>
+  </div>
+  <div class="dft"><button class="xb pri" id="dlgCopy">계좌번호 복사</button><button class="xb" id="dlgClose">닫기</button></div>
+</div></div>
 <div id="tabs"><span class="tnav">◀</span><span class="tnav">▶</span><span id="tabList" style="display:flex"></span><span class="tadd">⊕</span></div>
-<div id="statusbar"><span id="stL">준비</span><span id="stR"></span><span class="stBtn" id="memoBtn">💬 메모</span><span>▦ ▤ ▥</span><span>─────●───── 100%</span></div>
+<div id="statusbar"><span id="stL">준비</span><span id="stR"></span><span class="stBtn" id="donateBtn">☕ 후원</span><span class="stBtn" id="memoBtn">💬 메모</span><span>▦ ▤ ▥</span><span>─────●───── 100%</span></div>
 
 <script>
 'use strict';
@@ -176,6 +209,15 @@ const PREFIX='xlsmini-v1-';
 const MAXP=6;
 const COLORS=['#c00000','#0070c0','#00a050','#7030a0','#ed7d31','#a08000'];
 const START_WORDS=['사과','기차','바다','나무','회의','엑셀','보고서','커피','점심','야근','출근','월급','휴가','사무실','프린터','결재','회식','주말','달력','연필','택배','김밥','라면','모니터','키보드','마우스','계약서','출장','명함','복사기'];
+
+/* ===== 광고 · 꾸미기 설정 ===== */
+const AD_SLOT='';            // 애드센스 디스플레이 광고 단위 번호(data-ad-slot). 넣으면 로비 하단 배너가 켜져요
+const AD_CLIENT='ca-pub-6056528810711682';
+const ACCOUNT_NO='3333168333186';
+const TITLES=['인턴','사원','주임','대리','과장','차장','부장','이사','상무','전무','부사장','사장','회장'];
+const NAME_COLORS=['#c00000','#0070c0','#00a050','#7030a0','#ed7d31','#e0218a','#00a3a3','#b8860b','#002060','#ff0000','#7f7f7f','#9900cc','#008080'];
+const cosm={views:0,ti:'',nc:''};
+let rewardShow=null,rewardPending=false,rewardNone=false,lastPhase=undefined,adBarInit=false;
 
 let peer=null,isHost=false,myId=null,myName='',hostConn=null,conns={},S=null,clockOff=0;
 let hostTimer=null,lastHTML=null,LM=null,bSel=null,joinTimer=null,chatKey='';
@@ -189,6 +231,23 @@ const P=id=>S?S.players.find(p=>p.id===id):null;
 const pname=id=>{const p=P(id);return p?p.name:'(나감)';};
 const pcol=id=>{const p=P(id);return p?COLORS[p.color]:'#999';};
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
+/* 꾸미기: 광고 시청 횟수 = 승진 단계, 그만큼 칭호·색상이 열려요 */
+function unlockedN(){return Math.min(cosm.views,TITLES.length);}
+function okTitle(t){return TITLES.includes(t)?t:'';}
+function okColor(c){return NAME_COLORS.includes(c)?c:'';}
+function loadCosm(){
+  cosm.views=Math.max(0,parseInt(ls('xlsmini-views')||'0',10)||0);
+  const n=unlockedN();
+  const ti=okTitle(ls('xlsmini-ti')||'');cosm.ti=ti&&TITLES.indexOf(ti)<n?ti:'';
+  const nc=okColor(ls('xlsmini-nc')||'');cosm.nc=nc&&NAME_COLORS.indexOf(nc)<n?nc:'';
+}
+function saveCosm(){ls('xlsmini-views',String(cosm.views));ls('xlsmini-ti',cosm.ti);ls('xlsmini-nc',cosm.nc);}
+function pushCosm(){saveCosm();if(S)act({type:'cosm',ti:cosm.ti,nc:cosm.nc});else render();}
+function fmtName(name,ti,nc){
+  ti=okTitle(ti);nc=okColor(nc);
+  return (ti?'<span class="ttag">'+ti+'</span>':'')+'<span'+(nc?' style="color:'+nc+';font-weight:600"':'')+'>'+esc(name)+'</span>';
+}
+function nameHTML(id){const p=P(id);return p?fmtName(p.name,p.ti,p.nc):'(나감)';}
 function msg(t){$('#msgtext').textContent=t;$('#msgbar').hidden=false;clearTimeout(msg.t);msg.t=setTimeout(()=>{$('#msgbar').hidden=true;},7000);}
 function genCode(){const ch='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<5;i++)s+=ch[Math.floor(Math.random()*ch.length)];return s;}
 function setHostTimer(ms,fn){clearTimeout(hostTimer);hostTimer=setTimeout(fn,ms);}
@@ -214,7 +273,7 @@ function createRoom(){
   peer=new Peer(PREFIX+code,{debug:0});
   peer.on('open',id=>{
     myId=id;isHost=true;
-    S={phase:'lobby',hostId:id,code,players:[{id,name:myName,color:0,wins:0}],game:null,g:null,result:null,chat:[],chatN:0,now:0};
+    S={phase:'lobby',hostId:id,code,players:[{id,name:myName,color:0,wins:0,ti:cosm.ti,nc:cosm.nc}],game:null,g:null,result:null,chat:[],chatN:0,now:0};
     sysChat(myName+' 님이 회의실을 열었습니다. 방 코드: '+code);
     $('#msgbar').hidden=true;broadcast();
   });
@@ -239,7 +298,7 @@ function joinRoom(){
   peer.on('open',id=>{
     myId=id;
     hostConn=peer.connect(PREFIX+code,{reliable:true,serialization:'json'});
-    hostConn.on('open',()=>hostConn.send({t:'join',name:myName}));
+    hostConn.on('open',()=>hostConn.send({t:'join',name:myName,ti:cosm.ti,nc:cosm.nc}));
     hostConn.on('data',guestRecv);
     hostConn.on('close',hostLost);
   });
@@ -274,7 +333,7 @@ function hostRecv(c,d){
     if(S.players.length>=MAXP){c.send({t:'reject',msg:'회의실이 꽉 찼어요 (최대 6명).'});setTimeout(()=>c.close(),800);return;}
     const used=S.players.map(p=>p.color);let col=0;while(used.includes(col))col++;
     const name=String(d.name||'').trim().slice(0,10)||'손님';
-    conns[c.peer]=c;S.players.push({id:c.peer,name,color:col,wins:0});
+    conns[c.peer]=c;S.players.push({id:c.peer,name,color:col,wins:0,ti:okTitle(d.ti),nc:okColor(d.nc)});
     sysChat(name+' 님이 들어왔습니다.'+(S.phase!=='lobby'?' (이번 판은 관전)':''));
     broadcast();
   }else if(d.t==='act'&&conns[c.peer]){handleAction(c.peer,d.a||{});}
@@ -306,8 +365,12 @@ function handleAction(pid,a){
   const host=pid===myId;
   if(a.type==='chat'){
     const p=P(pid);const m=String(a.m||'').trim().slice(0,200);if(!p||!m)return;
-    S.chat.push({n:p.name,c:p.color,m});S.chatN++;if(S.chat.length>80)S.chat.shift();
+    S.chat.push({n:p.name,c:p.color,ti:p.ti,nc:p.nc,m});S.chatN++;if(S.chat.length>80)S.chat.shift();
     broadcast();return;
+  }
+  if(a.type==='cosm'){
+    const p=P(pid);if(!p)return;
+    p.ti=okTitle(a.ti);p.nc=okColor(a.nc);broadcast();return;
   }
   if(a.type==='start'){
     const G=GAMES[a.game];
@@ -326,7 +389,7 @@ function finishGame(rank,detail,winners){
   rank=rank.filter(id=>P(id));
   winners=(winners||rank.slice(0,1)).filter(id=>P(id));
   winners.forEach(id=>{P(id).wins++;});
-  S.result={rows:rank.map(id=>({id,name:pname(id),d:detail(id),win:winners.includes(id)}))};
+  S.result={rows:rank.map(id=>({id,name:pname(id),ti:P(id).ti,nc:P(id).nc,d:detail(id),win:winners.includes(id)}))};
   S.phase='result';
   sysChat('■ '+GAMES[S.game].name+' 결과: '+(winners.length?winners.map(pname).join(', ')+' 승리!':'승자 없음'));
   broadcast();
@@ -397,7 +460,7 @@ const MINE={
       let pct=p.pct,hits=p.hits;
       if(id===myId&&LM){pct=LM.revN/LM.safe*100;hits=LM.hits;}
       const rec=p.left?'나감':p.gaveup?'포기':p.time!=null?(p.time/1000).toFixed(1)+'초':p.done?'완료':'진행 중';
-      h+='<tr><td><span class="dot" style="background:'+pcol(id)+'"></span>'+esc(pname(id))+(id===myId?' (나)':'')+'</td><td><div class="dbar"><i style="width:'+pct.toFixed(0)+'%"></i><span>'+pct.toFixed(0)+'%</span></div></td><td>'+hits+'</td><td>'+rec+'</td></tr>';
+      h+='<tr><td><span class="dot" style="background:'+pcol(id)+'"></span>'+nameHTML(id)+(id===myId?' (나)':'')+'</td><td><div class="dbar"><i style="width:'+pct.toFixed(0)+'%"></i><span>'+pct.toFixed(0)+'%</span></div></td><td>'+hits+'</td><td>'+rec+'</td></tr>';
     });
     h+='</table>';
     if(isHost&&S.phase==='game')h+='<div class="bar" style="margin-top:8px"><button class="xb" data-a="mend">결과 집계 (강제 종료)</button></div>';
@@ -538,7 +601,7 @@ const BINGO={
     h+='</div><div class="sec"><div class="ttl">담당자 현황</div><table class="xt"><tr><th>담당자</th><th>상태</th><th>빙고</th></tr>';
     g.order.forEach(id=>{
       const st=g.stage==='setup'?(g.ready[id]?'준비':'배치 중'):(S.phase==='game'&&id===cur?'▶ 차례':'');
-      h+='<tr><td><span class="dot" style="background:'+pcol(id)+'"></span>'+esc(pname(id))+(id===myId?' (나)':'')+'</td><td>'+st+'</td><td>'+(g.stage==='play'?(g.lines[id]||0)+'줄':'-')+'</td></tr>';
+      h+='<tr><td><span class="dot" style="background:'+pcol(id)+'"></span>'+nameHTML(id)+(id===myId?' (나)':'')+'</td><td>'+st+'</td><td>'+(g.stage==='play'?(g.lines[id]||0)+'줄':'-')+'</td></tr>';
     });
     h+='</table>';
     if(g.called.length){
@@ -646,7 +709,7 @@ const WORD={
       if(!P(id))return;
       const lv=g.lives[id];
       const st=lv<=0?'탈락':(S.phase==='game'&&id===cur?'▶ 차례':'참석');
-      h+='<tr><td><span class="dot" style="background:'+pcol(id)+'"></span>'+esc(pname(id))+(id===myId?' (나)':'')+'</td><td style="color:#c00000">'+('♥'.repeat(Math.max(0,lv))||'-')+'</td><td>'+g.words.filter(x=>x.id===id).length+'</td><td>'+st+'</td></tr>';
+      h+='<tr><td><span class="dot" style="background:'+pcol(id)+'"></span>'+nameHTML(id)+(id===myId?' (나)':'')+'</td><td style="color:#c00000">'+('♥'.repeat(Math.max(0,lv))||'-')+'</td><td>'+g.words.filter(x=>x.id===id).length+'</td><td>'+st+'</td></tr>';
     });
     h+='</table></div></div>';
     return h;
@@ -669,23 +732,44 @@ function homeHTML(){
   '<tr><td>1</td><td>최대 6명, 2명부터 바로 할 수 있어요 (지뢰찾기는 혼자도 가능)</td></tr>'+
   '<tr><td>2</td><td>게임: 지뢰찾기 대전 · 빙고 · 끝말잇기</td></tr>'+
   '<tr><td>3</td><td><b>ESC</b> = 업무 화면으로 즉시 전환 (한 번 더 누르면 복귀)</td></tr>'+
-  '<tr><td>4</td><td>방장이 창을 닫으면 회의실이 사라져요</td></tr></table></div></div>';
+  '<tr><td>4</td><td>방장이 창을 닫으면 회의실이 사라져요</td></tr>'+
+  '<tr><td>5</td><td><a href="guide.html" target="_blank">게임 안내</a> · <a href="privacy.html" target="_blank">개인정보처리방침</a></td></tr></table></div></div>';
 }
 function lobbyHTML(){
   let h='<div class="row"><div class="sec"><div class="ttl">참가자 명단</div><table class="xt"><tr><th>No</th><th>이름</th><th>구분</th><th>누적 승리</th></tr>';
-  S.players.forEach((p,i)=>{h+='<tr><td>'+(i+1)+'</td><td><span class="dot" style="background:'+COLORS[p.color]+'"></span>'+esc(p.name)+(p.id===myId?' (나)':'')+'</td><td>'+(p.id===S.hostId?'방장':'참석')+'</td><td>'+p.wins+'</td></tr>';});
+  S.players.forEach((p,i)=>{h+='<tr><td>'+(i+1)+'</td><td><span class="dot" style="background:'+COLORS[p.color]+'"></span>'+fmtName(p.name,p.ti,p.nc)+(p.id===myId?' (나)':'')+'</td><td>'+(p.id===S.hostId?'방장':'참석')+'</td><td>'+p.wins+'</td></tr>';});
   for(let i=S.players.length;i<MAXP;i++)h+='<tr><td>'+(i+1)+'</td><td style="color:#999">(빈 자리)</td><td></td><td></td></tr>';
   h+='</table><div class="sub">회의실 정보</div><div class="bar">방 코드 <b style="font-size:18px;letter-spacing:2px;color:#217346">'+esc(S.code)+'</b><button class="xb" data-a="copy">초대 링크 복사</button><button class="xb" data-a="leave">나가기</button></div></div>';
   h+='<div class="sec"><div class="ttl">안건 목록</div><table class="xt"><tr><th>게임</th><th>시트</th><th>내용</th><th>인원</th>'+(isHost?'<th></th>':'')+'</tr>';
   Object.entries(GAMES).forEach(([k,G])=>{
     h+='<tr><td><b>'+G.name+'</b></td><td>'+G.sheet+'</td><td>'+G.desc+'</td><td>'+G.min+'~6명</td>'+(isHost?'<td><button class="xb pri" data-a="start" data-v="'+k+'"'+(S.players.length<G.min?' disabled':'')+'>시작</button></td>':'')+'</tr>';
   });
-  h+='</table><div class="hint">'+(isHost?'게임을 골라 시작하세요. 사람이 다 안 와도 시작할 수 있어요.':'방장이 게임을 고르는 중이에요...')+'</div></div></div>';
+  h+='</table><div class="hint">'+(isHost?'게임을 골라 시작하세요. 사람이 다 안 와도 시작할 수 있어요.':'방장이 게임을 고르는 중이에요...')+'</div>';
+  h+=badgeHTML()+'</div></div>';
+  return h;
+}
+function badgeHTML(){
+  const n=unlockedN(),rank=n?TITLES[n-1]:'(무직)';
+  let h='<div class="sub" style="margin-top:18px">🪪 내 사원증</div><table class="xt">';
+  h+='<tr><th>항목</th><th>내용</th></tr>';
+  h+='<tr><td>현재 직급</td><td><b>'+rank+'</b> · 광고 '+cosm.views+'회 시청'+(n<TITLES.length?' (다음: '+TITLES[n]+')':' · 최고 직급!')+'</td></tr>';
+  h+='<tr><td>표시 칭호</td><td><select class="xs" id="tiSel"><option value="">(표시 안 함)</option>';
+  for(let i=0;i<n;i++)h+='<option'+(cosm.ti===TITLES[i]?' selected':'')+'>'+TITLES[i]+'</option>';
+  h+='</select></td></tr>';
+  h+='<tr><td>닉네임 색상</td><td style="height:30px"><span class="swatch'+(cosm.nc===''?' on':'')+'" data-a="nc" data-v="" style="background:#222" title="기본"></span> ';
+  NAME_COLORS.forEach((c,i)=>{h+='<span class="swatch'+(cosm.nc===c?' on':'')+(i>=n?' lock':'')+'" data-a="nc" data-v="'+c+'" style="background:'+c+'" title="'+(i>=n?TITLES[i]+' 승진 시 해금':'선택')+'"></span> ';});
+  h+='</td></tr>';
+  let btn;
+  if(rewardShow)btn='<button class="xb pri" data-a="reward">🎬 광고 보고 승진하기</button>';
+  else if(rewardPending)btn='<button class="xb" disabled>광고 불러오는 중...</button>';
+  else btn='<button class="xb" data-a="rewardRetry">🎬 승진 광고 확인</button>'+(rewardNone?' <span class="hint">지금은 볼 수 있는 광고가 없어요. 잠시 후 다시 눌러 주세요.</span>':'');
+  h+='<tr><td>승진 심사</td><td>'+btn+'</td></tr></table>';
+  h+='<div class="hint">광고를 끝까지 보면 한 단계 승진해서 새 칭호와 닉네임 색상이 열려요.</div>';
   return h;
 }
 function resultHTML(){
   let h='<div class="sec"><div class="ttl">📊 결과 보고 — '+esc(GAMES[S.game].name)+'</div><table class="xt"><tr><th>순위</th><th>이름</th><th>기록</th></tr>';
-  S.result.rows.forEach((r,i)=>{h+='<tr class="'+(r.win?'win':'')+'"><td>'+(i+1)+'</td><td>'+(r.win?'🏆 ':'')+esc(r.name)+(r.id===myId?' (나)':'')+'</td><td>'+esc(r.d)+'</td></tr>';});
+  S.result.rows.forEach((r,i)=>{h+='<tr class="'+(r.win?'win':'')+'"><td>'+(i+1)+'</td><td>'+(r.win?'🏆 ':'')+fmtName(r.name,r.ti,r.nc)+(r.id===myId?' (나)':'')+'</td><td>'+esc(r.d)+'</td></tr>';});
   h+='</table><div class="bar" style="margin-top:6px">'+(isHost?'<button class="xb pri" data-a="again">한 판 더</button><button class="xb" data-a="lobby">다른 게임 고르기</button>':'<span class="hint">방장이 다음 판을 고르는 중...</span>')+'</div></div>';
   return h;
 }
@@ -724,13 +808,14 @@ function render(){
     if(w&&!boss&&document.activeElement!==w&&document.activeElement!==$('#chatIn'))w.focus();
   }
   renderChat();
+  syncAds();
 }
 function renderChat(){
   const key=S?S.code+'#'+S.chatN:'none';if(key===chatKey)return;chatKey=key;
   const log=$('#chatLog');
   if(!S){log.innerHTML='<div class="cm sys">회의실에 들어가면 여기서 대화할 수 있어요.</div>';$('#chatIn').disabled=true;return;}
   $('#chatIn').disabled=false;
-  log.innerHTML=S.chat.map(c=>c.sys?'<div class="cm sys">'+esc(c.m)+'</div>':'<div class="cm"><b style="color:'+(COLORS[c.c]||'#333')+'">'+esc(c.n)+':</b> '+esc(c.m)+'</div>').join('');
+  log.innerHTML=S.chat.map(c=>c.sys?'<div class="cm sys">'+esc(c.m)+'</div>':'<div class="cm"><span class="dot" style="background:'+(COLORS[c.c]||'#333')+'"></span>'+fmtName(c.n,c.ti,c.nc)+': '+esc(c.m)+'</div>').join('');
   log.scrollTop=log.scrollHeight;
 }
 function tick(){
@@ -752,6 +837,52 @@ function tick(){
   }
 }
 setInterval(tick,200);
+
+/* ===================== 광고 ===================== */
+const adsOK=()=>typeof window.adBreak==='function';
+function adPreroll(){if(!adsOK())return;try{adConfig({preloadAdBreaks:'on',sound:'off'});adBreak({type:'preroll',adBreakDone:()=>{}});}catch(e){}}
+function adNext(){ // 판이 끝나고 로비로 돌아올 때
+  if(!adsOK()||document.body.classList.contains('boss'))return;
+  try{adBreak({type:'next',name:'back_to_lobby',beforeAd:()=>{},afterAd:()=>{},adBreakDone:()=>{}});}catch(e){}
+}
+function requestReward(){
+  if(!adsOK()||rewardPending||rewardShow)return;
+  rewardPending=true;rewardNone=false;render();
+  let shown=false,finished=false;
+  // 광고 차단기 등으로 응답이 없으면 8초 뒤 버튼을 되살려요
+  setTimeout(()=>{if(!shown&&!finished&&rewardPending){rewardPending=false;rewardNone=true;render();}},8000);
+  try{
+    adBreak({type:'reward',name:'promotion',
+      beforeReward:show=>{shown=true;rewardShow=show;rewardPending=false;render();},
+      beforeAd:()=>{},afterAd:()=>{},
+      adDismissed:()=>{msg('광고를 끝까지 봐야 승진할 수 있어요.');},
+      adViewed:()=>{
+        const before=unlockedN();cosm.views++;const n=unlockedN();
+        if(n>before){cosm.ti=TITLES[n-1];if(!cosm.nc)cosm.nc=NAME_COLORS[n-1];msg('🎉 '+TITLES[n-1]+'(으)로 승진했어요! 새 칭호와 색상이 열렸어요.');}
+        else msg('🎉 광고 시청 완료! 이미 최고 직급이에요.');
+        pushCosm();
+      },
+      adBreakDone:info=>{
+        finished=true;rewardShow=null;rewardPending=false;
+        if(!shown)rewardNone=true;
+        render();
+      }});
+  }catch(e){rewardPending=false;rewardNone=true;render();}
+}
+function syncAds(){
+  const ph=S?S.phase:null;
+  if(lastPhase==='result'&&ph==='lobby')adNext();
+  if(ph==='lobby'&&lastPhase!=='lobby')setTimeout(requestReward,2500);
+  lastPhase=ph;
+  // 로비 하단 배너 (AD_SLOT을 넣었을 때만)
+  const bar=$('#adBar');const want=!!AD_SLOT&&ph==='lobby';
+  bar.hidden=!want;
+  if(want&&!adBarInit){
+    adBarInit=true;
+    bar.innerHTML='<ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:60px" data-ad-client="'+AD_CLIENT+'" data-ad-slot="'+AD_SLOT+'"></ins>';
+    try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+  }
+}
 
 /* ===================== 보스 모드(업무 화면) ===================== */
 function buildBoss(){
@@ -811,14 +942,32 @@ $('#content').addEventListener('click',e=>{
     case 'bready':bSel=null;act({type:'bready'});break;
     case 'bforce':act({type:'bforce'});break;
     case 'wsend':sendWord();break;
+    case 'reward':if(rewardShow){const f=rewardShow;rewardShow=null;try{f();}catch(e){}render();}break;
+    case 'rewardRetry':requestReward();break;
+    case 'nc':{
+      if(t.classList.contains('lock')){msg(t.title);break;}
+      cosm.nc=okColor(v);pushCosm();break;}
   }
 });
+$('#content').addEventListener('change',e=>{
+  if(e.target.id==='tiSel'){const ti=okTitle(e.target.value);cosm.ti=ti&&TITLES.indexOf(ti)<unlockedN()?ti:'';pushCosm();}
+});
+function openDlg(){$('#dlg').hidden=false;}
+function closeDlg(){$('#dlg').hidden=true;}
+$('#donateBtn').onclick=$('#helpTab').onclick=openDlg;
+$('#dlgX').onclick=$('#dlgClose').onclick=closeDlg;
+$('#dlg').addEventListener('click',e=>{if(e.target.id==='dlg')closeDlg();});
+$('#dlgCopy').onclick=()=>{
+  const done=()=>msg('계좌번호를 복사했어요. (카카오뱅크 '+ACCOUNT_NO+' 이윤익)');
+  if(navigator.clipboard)navigator.clipboard.writeText(ACCOUNT_NO).then(done,()=>msg('카카오뱅크 '+ACCOUNT_NO+' 이윤익'));
+  else msg('카카오뱅크 '+ACCOUNT_NO+' 이윤익');
+};
 $('#content').addEventListener('contextmenu',e=>{
   const t=e.target.closest('[data-a="mcell"]');
   if(t){e.preventDefault();mineClick(+t.dataset.v,true);}
 });
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){e.preventDefault();toggleBoss();return;}
+  if(e.key==='Escape'){e.preventDefault();if(!$('#dlg').hidden)closeDlg();toggleBoss();return;}
   if(e.key!=='Enter'||e.isComposing||e.keyCode===229)return;
   const id=e.target.id;
   if(id==='codeIn'||(id==='nameIn'&&$('#codeIn').value.trim()))joinRoom();
@@ -831,7 +980,9 @@ $('#memoBtn').onclick=$('#sideX').onclick=()=>document.body.classList.toggle('no
 window.addEventListener('beforeunload',()=>{try{peer&&peer.destroy();}catch(e){}});
 if(window.innerWidth<760)document.body.classList.add('nomemo');
 
+loadCosm();
 buildBoss();
 render();
+adPreroll();
 </script>
 </body>
