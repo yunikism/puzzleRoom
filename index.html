@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>통합 문서1 - Excel</title>
-<meta name="description" content="회사에서 몰래 즐기는 엑셀 화면 멀티플레이 미니게임. 지뢰찾기 대전·빙고·끝말잇기·오목·마피아·라이어 게임, 최대 10명. ESC 한 번이면 업무 화면으로!">
+<meta name="description" content="회사에서 몰래 즐기는 엑셀 화면 멀티플레이 미니게임. 지뢰찾기 대전·빙고·끝말잇기·오목·마피아·라이어 게임·과일 종치기·원카드, 최대 10명. ESC 한 번이면 업무 화면으로!">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="엑셀 미니게임">
 <meta property="og:title" content="엑셀 미니게임 - 일하는 척하면서 같이 놀기">
-<meta property="og:description" content="지뢰찾기 대전·빙고·끝말잇기·오목·마피아·라이어 | 최대 10명 | ESC 누르면 바로 업무 화면">
+<meta property="og:description" content="지뢰찾기·빙고·끝말잇기·오목·마피아·라이어·과일 종치기·원카드 | 최대 10명 | ESC 누르면 바로 업무 화면">
 <meta property="og:image" content="https://yunikism.kr/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -148,6 +148,64 @@ body.nomemo #side{display:none}
 .xt tr.dead td{color:#a6a6a6;text-decoration:line-through}
 .ch-mafia{background:#ffe5e5;border-color:#f4b6b6}
 .ch-dead{background:#eeeeee;border-color:#cccccc}
+/* liar / result */
+.lw-banner{display:flex;gap:10px;align-items:stretch;margin:4px 0 12px;max-width:640px;flex-wrap:wrap}
+.lw-cat{background:#1f3864;color:#fff;padding:10px 18px;display:flex;flex-direction:column;justify-content:center;min-width:150px;font-size:13px}
+.lw-cat b{font-size:24px;line-height:1.3}
+.lw-word{flex:1;min-width:220px;background:#fff2cc;border:3px solid #ffc000;padding:8px 16px}
+.lw-word .lbl{font-size:13px;color:#7f6000}
+.lw-word .big{font-size:36px;font-weight:800;color:#222;line-height:1.25}
+.lw-word.liar{background:#ffe5e5;border-color:#c00000}
+.lw-word.liar .big,.lw-word.liar .lbl{color:#c00000}
+.rv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-width:640px}
+.rv>div{border:2px solid #d4d4d4;padding:8px 12px;background:#fff}
+.rv .k{font-size:12px;color:#595959}
+.rv .v{font-size:24px;font-weight:800;line-height:1.3;word-break:break-all}
+.rv .liar{border-color:#c00000;background:#fff5f5}.rv .liar .v{color:#c00000}
+.rv .ans{border-color:#ffc000;background:#fff2cc}
+.rv .ok{color:#00804a;font-size:16px}.rv .ng{color:#c00000;font-size:16px}
+.wl-banner{font-size:26px;font-weight:800;padding:10px 18px;margin:2px 0 10px;max-width:640px;text-align:center;line-height:1.3}
+.wl-banner .sm{display:block;font-size:15px;font-weight:600;margin-top:2px}
+.wl-banner.win{background:#c6efce;color:#006100;border:3px solid #00a050}
+.wl-banner.lose{background:#ffc7ce;color:#9c0006;border:3px solid #c00000}
+.wl-banner.draw{background:#ededed;color:#404040;border:3px solid #a6a6a6}
+.xt tr.lose td{background:#f7f7f7;color:#595959}
+/* fruit */
+.xt.log td{white-space:normal;max-width:360px;line-height:1.5}
+.fr-table{display:flex;gap:10px;flex-wrap:wrap;max-width:740px;background:#fff;padding:4px 0}
+.fr-seat{border:2px solid #d4d4d4;padding:6px;background:#fff;width:136px}
+.fr-seat.on{border-color:#ffc000;background:#fffbea}
+.fr-seat.out{opacity:.45}
+.fr-name{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fr-card{height:84px;border:2px solid #4472c4;border-radius:6px;background:#fff;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:2px;font-size:22px;margin:4px 0;padding:4px;line-height:1.1}
+.fr-card.empty{border-style:dashed;color:#a6a6a6;font-size:12px;border-color:#bfbfbf}
+.fr-cnt{font-size:11px;color:#595959}
+.fr-arena{position:relative;width:740px;max-width:100%;height:170px;margin-top:10px;border:1px dashed #a6a6a6;background:#fafafa}
+.fr-bell{position:absolute;width:68px;height:68px;border-radius:50%;border:3px solid #c00000;background:#fff2cc;font-size:38px;cursor:pointer;padding:0;line-height:1}
+.fr-bell:hover{background:#ffe699}
+.fr-bell.rang{opacity:.35;cursor:default}
+.fr-arena-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#7f7f7f}
+/* onecard */
+.oc-board{display:flex;gap:18px;align-items:center;background:#fff;padding:6px 0;max-width:640px}
+.oc-pile .k{font-size:12px;color:#595959}
+.occ{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:64px;border:1.5px solid #404040;border-radius:5px;background:#fff;font-size:18px;margin:2px;vertical-align:middle;line-height:1.1;color:#222;user-select:none}
+.occ b{font-size:17px}
+.occ.red{color:#c00000}
+.occ.big{width:78px;height:108px;font-size:30px}.occ.big b{font-size:28px}
+.occ.mini{width:28px;height:38px;font-size:11px;margin:1px}.occ.mini b{font-size:11px}
+.occ.joker{background:#f2f2f2}.occ.joker.color{background:#fde9ff}
+.occ small{font-size:10px}
+.occ.ok{border:3px solid #00a050;cursor:pointer;box-shadow:0 2px 0 #00a050}
+.occ.ok:hover{transform:translateY(-4px)}
+.occ.sel{outline:3px solid #ffc000}
+.oc-hand{display:flex;flex-wrap:wrap;max-width:680px;background:#fff;padding:4px 0}
+.oc-info{font-size:14px;line-height:1.9}
+.oc-suit{font-size:22px}.oc-suit.red{color:#c00000}
+.oc-atk{background:#ffc7ce;color:#9c0006;border:2px solid #c00000;font-weight:800;font-size:18px;padding:4px 10px;display:inline-block;line-height:1.4}
+.oc-atk small{display:block;font-size:12px;font-weight:600}
+.xb.oc-one{background:#c00000;color:#fff;border-color:#900;font-weight:700;height:30px;animation:shareGlow 1s infinite}
+.oc-sbtn{font-size:18px;height:30px;min-width:40px}.oc-sbtn.red{color:#c00000}
+.oc-back{color:#4472c4;letter-spacing:-2px;font-size:11px}
 /* omok */
 .om{border-collapse:collapse;background:#fff;user-select:none}
 .om td{width:26px;min-width:26px;height:26px;border:1px solid #d4d4d4;padding:0;text-align:center}
@@ -1022,6 +1080,7 @@ const MAFIA={
     return v;
   },
   view(){return isHost?this.viewFor(myId):S.g;},
+  resultTitle(){const g=S.g;return g&&g.winner?(g.winner==='m'?'🕴️ 마피아 팀 승리!':'🎉 시민 팀 승리!'):'';},
   chatScope(pid,g){ // null=대화 불가, ''=전체, 'mafia', 'dead'
     if(S.phase!=='game')return '';
     if(!g.roles[pid]||!g.alive[pid])return 'dead';
@@ -1121,10 +1180,13 @@ const LIAR={
   name:'라이어 게임',sheet:'아이디어회의',min:3,max:10,
   desc:'한 명만 제시어를 몰라요. 돌아가며 힌트를 말하고 투표로 라이어를 찾아요 (바보 모드 지원)',
   T:{word:10,hint:30,discuss:60,vote:30,guess:30},
+  MAX_ROUNDS:3,
+  setHint(g,id,t){(g.hints[id]=g.hints[id]||[])[g.round-1]=t;},
+  curHint(g,id){return (g.hints[id]||[])[g.round-1];},
   start(){
     const ids=S.players.map(p=>p.id).slice(0,10);
     const g={stage:'setup',order:shuffle(ids.slice()),names:{},cat:'random',mode:'normal',liar:null,word:'',fake:'',catName:'',
-             turn:0,hints:{},skip:{},votes:{},lastVotes:null,accused:null,guess:'',winner:null,reason:'',deadline:0};
+             turn:0,round:1,hints:{},choice:{},votes:{},lastVotes:null,accused:null,guess:'',winner:null,reason:'',deadline:0};
     ids.forEach(id=>g.names[id]=pname(id));
     S.g=g;
   },
@@ -1136,7 +1198,7 @@ const LIAR={
   timeout(){
     const g=S.g;
     if(g.stage==='word')this.stageTo('hint');
-    else if(g.stage==='hint'){const id=g.order[g.turn];if(id&&!g.hints[id])g.hints[id]='(시간 초과)';this.nextHint();}
+    else if(g.stage==='hint'){const id=g.order[g.turn];if(id&&!this.curHint(g,id))this.setHint(g,id,'(시간 초과)');this.nextHint();}
     else if(g.stage==='discuss')this.stageTo('vote');
     else if(g.stage==='vote'){this.resolveVote();return;}
     else if(g.stage==='guess'){this.finish(false,'라이어가 시간 안에 제시어를 맞히지 못했어요.');return;}
@@ -1146,10 +1208,10 @@ const LIAR={
     const g=S.g,cats=Object.keys(LIAR_WORDS);
     const cat=LIAR_WORDS[g.cat]?g.cat:pick(cats),list=LIAR_WORDS[cat];
     const w=pick(list);let f=pick(list);while(f===w)f=pick(list);
-    g.catName=cat;g.word=w;g.fake=f;g.liar=pick(g.order);g.turn=0;g.hints={};
+    g.catName=cat;g.word=w;g.fake=f;g.liar=pick(g.order);g.turn=0;g.round=1;g.hints={};
     this.stageTo('word');
   },
-  nextHint(){const g=S.g;g.turn++;if(g.turn>=g.order.length){g.skip={};this.stageTo('discuss');}else this.stageTo('hint');},
+  nextHint(){const g=S.g;g.turn++;if(g.turn>=g.order.length){g.choice={};this.stageTo('discuss');}else this.stageTo('hint');},
   norm(s){return String(s||'').replace(/\s+/g,'').toLowerCase();},
   action(pid,a){
     const g=S.g,host=pid===S.hostId,inG=g.order.includes(pid);
@@ -1164,11 +1226,14 @@ const LIAR={
     if(!inG)return;
     if(a.type==='lhint'&&g.stage==='hint'&&g.order[g.turn]===pid){
       const t=String(a.t||'').trim().slice(0,40);if(!t)return;
-      g.hints[pid]=t;this.nextHint();broadcast();return;
+      this.setHint(g,pid,t);this.nextHint();broadcast();return;
     }
-    if(a.type==='lskip'&&g.stage==='discuss'){
-      g.skip[pid]=!g.skip[pid];
-      if(g.order.filter(id=>g.skip[id]).length>g.order.length/2)this.stageTo('vote');
+    if(a.type==='lchoice'&&g.stage==='discuss'&&(a.c==='vote'||a.c==='more')){
+      if(a.c==='more'&&g.round>=this.MAX_ROUNDS)return;
+      g.choice[pid]=g.choice[pid]===a.c?undefined:a.c;
+      const half=g.order.length/2,cnt=c=>g.order.filter(id=>g.choice[id]===c).length;
+      if(cnt('more')>half){g.round++;g.turn=0;g.choice={};g.log=g.log||[];this.stageTo('hint');}  // 과반이 '한 바퀴 더' → 힌트 한 바퀴 더
+      else if(cnt('vote')>half)this.stageTo('vote');
       broadcast();return;
     }
     if(a.type==='lvote'&&g.stage==='vote'&&g.order.includes(a.t)&&a.t!==pid){
@@ -1205,7 +1270,7 @@ const LIAR={
   leave(pid){
     const g=S.g,idx=g.order.indexOf(pid);if(idx<0)return;
     if(pid===g.liar&&g.stage!=='setup'&&g.stage!=='end'){this.finish(false,'라이어 '+this.nm(pid)+' 님이 회의에서 도망쳤어요!');return;}
-    g.order.splice(idx,1);delete g.votes[pid];delete g.skip[pid];
+    g.order.splice(idx,1);delete g.votes[pid];if(g.choice)delete g.choice[pid];
     if(g.order.length<2){if(g.order.length===1&&g.stage!=='setup')this.finish(g.order[0]===g.liar,'다른 참석자가 모두 나갔어요.');else backToLobby();return;}
     if(g.stage==='hint'){
       if(idx<g.turn)g.turn--;
@@ -1230,6 +1295,7 @@ const LIAR={
     return v;
   },
   view(){return isHost?this.viewFor(myId):S.g;},
+  resultTitle(){const g=S.g;return g&&g.winner?(g.winner==='liar'?'🤥 라이어 승리!':'🎉 시민 팀 승리!'):'';},
   myTurn(){
     if(!S||S.phase!=='game')return false;
     const g=this.view();if(!g.order.includes(myId))return false;
@@ -1242,7 +1308,8 @@ const LIAR={
   render(){
     const g=this.view(),st=S.phase==='game'?g.stage:'end',inG=g.order.includes(myId);
     const nm=id=>esc(g.names[id]||'?');
-    const heads={setup:'⚙️ 회의 준비',word:'📝 제시어 확인',hint:'💬 힌트 발표',discuss:'🗣️ 자유 토론',vote:'🗳️ 라이어 지목 투표',guess:'🤥 라이어의 최후 추리',end:'📊 회의 결과'};
+    const R=g.round||1;
+    const heads={setup:'⚙️ 회의 준비',word:'📝 제시어 확인',hint:'💬 힌트 발표 ('+R+'바퀴째)',discuss:'🗣️ 자유 토론',vote:'🗳️ 라이어 지목 투표',guess:'🤥 라이어의 최후 추리',end:'📊 회의 결과'};
     let h='<div class="row"><div class="sec"><div class="ttl">아이디어 회의록 — '+heads[st]+'</div><div class="bar">';
     if(S.phase==='game'&&st!=='setup')h+='<span>남은 시간 <span data-dl="'+g.deadline+'"></span></span>';
     if(isHost&&st==='word')h+='<button class="xb" data-a="lnext">바로 힌트 시작</button>';
@@ -1257,27 +1324,38 @@ const LIAR={
         h+='<div class="hint">일반: 라이어는 자기가 라이어인 걸 알아요. 바보: 라이어도 같은 주제의 <b>다른 단어</b>를 받아서 자기가 라이어인지 몰라요.</div>';
         h+='<div class="bar" style="margin-top:8px"><button class="xb pri" data-a="lgo">회의 시작</button></div>';
       }else h+='<div class="mf-ann">⚙️ 방장이 주제와 모드를 고르는 중이에요… (주제: '+(g.cat==='random'?'🎲 랜덤':esc(g.cat))+' · '+(g.mode==='fool'?'바보 모드':'일반 모드')+')</div>';
+    }else if(st==='end'||g.revealed){
+      // ===== 결과 공개 =====
+      const fool=g.mode==='fool',hadGuess=!!g.guess,right=hadGuess&&this.norm(g.guess)===this.norm(g.word);
+      h+='<div class="rv">';
+      h+='<div class="liar"><div class="k">🤥 라이어</div><div class="v">'+nm(g.liar)+(g.liar===myId?' (나)':'')+'</div></div>';
+      h+='<div class="ans"><div class="k">✅ 정답 제시어 · '+esc(g.catName)+'</div><div class="v">'+esc(g.word)+'</div></div>';
+      if(fool)h+='<div><div class="k">🃏 라이어가 받은 단어 (바보 모드)</div><div class="v">'+esc(g.fake)+'</div></div>';
+      h+='<div><div class="k">🎯 라이어의 최후 추리</div><div class="v">'+(hadGuess?esc(g.guess)+' <span class="'+(right?'ok':'ng')+'">'+(right?'✔ 정답':'✘ 오답')+'</span>':'<span style="font-size:15px;color:#7f7f7f">추리 기회 없음 (지목 실패)</span>')+'</div></div>';
+      h+='</div>';
+      if(g.reason)h+='<div class="mf-ann" style="margin-top:8px">'+esc(g.reason)+'</div>';
     }else{
-      // 내 카드
-      if(st==='end'||g.revealed){
-        h+='<div class="mf-role"><div>주제: <b>'+esc(g.catName)+'</b> · '+(g.mode==='fool'?'바보 모드':'일반 모드')+'</div><div class="rn">정답: '+esc(g.word)+'</div>'+
-           '<div>🤥 라이어: <b>'+nm(g.liar)+'</b>'+(g.mode==='fool'?' (받은 단어: '+esc(g.fake)+')':'')+(g.guess?' · 최후 추리: "'+esc(g.guess)+'"':'')+'</div></div>';
-        if(g.reason)h+='<div class="mf-ann">'+(g.winner==='liar'?'🤥 라이어 승리! ':'🎉 시민 승리! ')+esc(g.reason)+'</div>';
-      }else if(!inG)h+='<div class="mf-role">👀 관전 중이에요. 주제: <b>'+esc(g.catName)+'</b></div>';
-      else if(g.iAmLiar)h+='<div class="mf-role m"><div>주제: <b>'+esc(g.catName)+'</b></div><div class="rn">🤥 당신은 라이어입니다!</div><div>'+(st==='guess'?'들켰어요! 마지막 기회, 시민들의 제시어를 맞혀 보세요.':'제시어를 모르는 걸 들키지 말고, 다른 사람 힌트로 제시어를 추리하세요.')+'</div></div>';
-      else h+='<div class="mf-role"><div>주제: <b>'+esc(g.catName)+'</b>'+(g.mode==='fool'?' · 바보 모드 (라이어도 자기가 라이어인지 몰라요)':'')+'</div><div class="rn">제시어: '+esc(g.myWord||'')+'</div><div>라이어가 눈치채지 못하게, 하지만 시민끼리는 알아볼 수 있게 힌트를 주세요.</div></div>';
-      // 단계별 행동
+      // ===== 제시어 크게 =====
+      h+='<div class="lw-banner"><div class="lw-cat"><span>주제</span><b>'+esc(g.catName)+'</b></div>';
+      if(!inG)h+='<div class="lw-word"><div class="lbl">관전 중</div><div class="big" style="font-size:22px">👀 제시어는 비밀</div></div>';
+      else if(g.iAmLiar)h+='<div class="lw-word liar"><div class="lbl">당신의 역할</div><div class="big">🤥 라이어!</div><div class="lbl">'+(st==='guess'?'들켰어요! 마지막 기회, 제시어를 맞혀 보세요.':'제시어를 모르는 걸 들키지 말고, 힌트로 제시어를 추리하세요.')+'</div></div>';
+      else h+='<div class="lw-word"><div class="lbl">제시어'+(g.mode==='fool'?' · 바보 모드 (라이어도 자기가 라이어인지 몰라요)':'')+'</div><div class="big">'+esc(g.myWord||'')+'</div></div>';
+      h+='</div>';
       if(st==='hint'){
         const cur=g.order[g.turn];
-        if(cur===myId)h+='<div class="sub">내 차례! 제시어 힌트를 한마디로</div><div class="bar"><input id="lhIn" class="xi" style="width:260px" maxlength="40" autocomplete="off" placeholder="예: 빨간색이에요"><button class="xb pri" data-a="lhint">발표</button></div>';
-        else h+='<div class="mf-ann">💬 '+nm(cur)+' 님이 힌트를 생각하는 중…</div>';
+        if(cur===myId)h+='<div class="sub">내 차례! ('+R+'바퀴째) 제시어 힌트를 한마디로</div><div class="bar"><input id="lhIn" class="xi" style="width:260px" maxlength="40" autocomplete="off" placeholder="예: 빨간색이에요"><button class="xb pri" data-a="lhint">발표</button></div>';
+        else h+='<div class="mf-ann">💬 '+nm(cur)+' 님이 힌트를 생각하는 중… ('+R+'바퀴째)</div>';
       }
       if(st==='discuss'){
-        const n=g.order.filter(id=>g.skip[id]).length;
-        h+='<div class="hint">힌트를 보고 누가 라이어 같은지 메모(채팅)로 토론하세요. 과반수가 찬성하면 바로 투표로 넘어가요.</div><div class="mf-btns">';
-        if(inG)h+='<button class="xb'+(g.skip[myId]?' sel':'')+'" data-a="lskip">'+(g.skip[myId]?'✔ ':'')+'투표하러 가기 찬성 ('+n+'/'+g.order.length+')</button>';
+        const cv=g.order.filter(id=>g.choice&&g.choice[id]==='vote').length,cm=g.order.filter(id=>g.choice&&g.choice[id]==='more').length;
+        const canMore=R<this.MAX_ROUNDS,my=g.choice&&g.choice[myId];
+        h+='<div class="hint">힌트를 보고 메모(채팅)로 토론하세요. 과반수가 고른 쪽으로 바로 넘어가요. 시간이 끝나면 투표로 가요.</div><div class="mf-btns">';
+        if(inG){
+          h+='<button class="xb'+(my==='vote'?' sel':'')+'" data-a="lchoice" data-v="vote">'+(my==='vote'?'✔ ':'')+'🗳️ 투표하러 가기 ('+cv+'/'+g.order.length+')</button>';
+          h+='<button class="xb'+(my==='more'?' sel':'')+'" data-a="lchoice" data-v="more"'+(canMore?'':' disabled')+'>'+(my==='more'?'✔ ':'')+'🔁 힌트 한 바퀴 더 ('+cm+'/'+g.order.length+')</button>';
+        }
         if(isHost)h+='<button class="xb" data-a="lforce">토론 종료 (방장)</button>';
-        h+='</div>';
+        h+='</div>'+(canMore?'':'<div class="hint">힌트는 최대 '+this.MAX_ROUNDS+'바퀴까지예요.</div>');
       }
       if(st==='vote'){
         const n=Object.keys(g.votes).length;
@@ -1293,12 +1371,18 @@ const LIAR={
       }
     }
     h+='</div>';
-    // 참석자 / 힌트 표
-    h+='<div class="sec"><div class="ttl">참석자 발언</div><table class="xt"><tr><th>순서</th><th>이름</th><th>힌트</th>'+(g.lastVotes?'<th>지목</th>':'')+'</tr>';
+    // ===== 참석자 / 힌트 표 (바퀴별) =====
+    const rounds=Math.max(1,R);
+    h+='<div class="sec"><div class="ttl">참석자 발언</div><table class="xt"><tr><th>순서</th><th>이름</th>';
+    for(let r=1;r<=rounds;r++)h+='<th>'+(rounds>1?r+'바퀴 힌트':'힌트')+'</th>';
+    h+=(g.lastVotes?'<th>지목</th>':'')+'</tr>';
     g.order.forEach((id,i)=>{
       const cur=st==='hint'&&g.order[g.turn]===id;
-      const liarTag=(g.revealed||st==='guess')&&id===g.liar?' 🤥':'';
-      h+='<tr'+(cur?' class="win"':'')+'><td>'+(i+1)+'</td><td><span class="dot" style="background:'+pcol(id)+'"></span>'+(P(id)?nameHTML(id):nm(id))+(id===myId?' (나)':'')+liarTag+'</td><td>'+(g.hints[id]?esc(g.hints[id]):(cur?'✏️ 작성 중…':''))+'</td>'+(g.lastVotes?'<td>'+(g.lastVotes[id]?'→ '+nm(g.lastVotes[id]):'')+'</td>':'')+'</tr>';
+      const isLiar=(g.revealed||st==='guess')&&id===g.liar;
+      h+='<tr'+(cur?' class="win"':'')+(isLiar?' style="outline:2px solid #c00000"':'')+'><td>'+(i+1)+'</td><td><span class="dot" style="background:'+pcol(id)+'"></span>'+(P(id)?nameHTML(id):nm(id))+(id===myId?' (나)':'')+(isLiar?' <b style="color:#c00000">🤥 라이어</b>':'')+'</td>';
+      const hs=g.hints[id]||[];
+      for(let r=1;r<=rounds;r++){const t=hs[r-1];h+='<td>'+(t?esc(t):(cur&&r===R?'✏️ 작성 중…':''))+'</td>';}
+      h+=(g.lastVotes?'<td>'+(g.lastVotes[id]?'→ '+nm(g.lastVotes[id]):'')+'</td>':'')+'</tr>';
     });
     h+='</table>';
     if(st!=='setup')h+='<div class="hint">주제: '+esc(g.catName)+' · '+(g.mode==='fool'?'바보 모드':'일반 모드')+'</div>';
@@ -1308,7 +1392,378 @@ const LIAR={
 };
 function sendLiar(type,inputId){const el=$('#'+inputId);if(!el)return;const v=el.value.trim();if(!v)return;el.value='';act({type,t:v});}
 
-const GAMES={mine:MINE,bingo:BINGO,word:WORD,omok:OMOK,mafia:MAFIA,liar:LIAR};
+/* ===================== 게임 7: 과일 종치기 (2~6명) ===================== */
+const FRUITS=['🍓','🍌','🍋','🍇'];
+const LF={seq:-1,t:0,rang:-1,key:''}; // 내 화면 기준 반응시간 측정용
+const FRUIT={
+  name:'과일 종치기',sheet:'과일재고',min:2,max:6,
+  desc:'카드를 한 장씩 뒤집다가 같은 과일이 딱 5개가 되면 화면 어딘가로 움직이는 종을 먼저 클릭!',
+  T:{flip:5,limit:300,window:350},
+  start(){
+    const ids=S.players.map(p=>p.id).slice(0,6);
+    const deck=[];
+    for(let f=0;f<4;f++)[[1,5],[2,3],[3,3],[4,2],[5,1]].forEach(([n,c])=>{for(let k=0;k<c;k++)deck.push({f,n});});
+    shuffle(deck);
+    const g={stage:'play',order:ids,names:{},decks:{},up:{},alive:{},turn:0,seq:0,bell:{x:Math.random(),y:Math.random()},rings:{},
+             last:null,log:[],deadline:0,endAt:Date.now()+this.T.limit*1000,key:Date.now()+'-'+Math.random()};
+    ids.forEach(id=>{g.names[id]=pname(id);g.decks[id]=[];g.up[id]=[];g.alive[id]=true;});
+    const per=Math.floor(deck.length/ids.length);
+    ids.forEach((id,i)=>{g.decks[id]=deck.slice(i*per,(i+1)*per);});
+    g.turn=Math.floor(Math.random()*ids.length);
+    S.g=g;this.arm();
+  },
+  nm(id){return (S.g&&S.g.names[id])||pname(id);},
+  total(g,id){return g.decks[id].length+g.up[id].length;},
+  aliveIds(g){return g.order.filter(id=>g.alive[id]);},
+  isFive(g){
+    const sum=[0,0,0,0];
+    g.order.forEach(id=>{const u=g.up[id];if(u.length){const c=u[u.length-1];sum[c.f]+=c.n;}});
+    return sum.indexOf(5);
+  },
+  arm(){
+    const g=S.g;g.deadline=Date.now()+this.T.flip*1000;
+    setHostTimer(this.T.flip*1000+200,()=>{if(S&&S.phase==='game'&&S.g===g&&g.stage==='play')this.flip(g.order[g.turn]);});
+  },
+  // 다음 차례: 카드가 없는 사람은 그 차례에 탈락
+  nextTurn(from){
+    const g=S.g;let t=from;
+    for(let k=0;k<g.order.length;k++){
+      t=(t+1)%g.order.length;const id=g.order[t];
+      if(!g.alive[id])continue;
+      if(!g.decks[id].length){g.alive[id]=false;g.log.push('💤 '+this.nm(id)+' 님은 낼 카드가 없어 탈락했어요.');continue;}
+      g.turn=t;return true;
+    }
+    return false;
+  },
+  endCheck(){
+    const g=S.g,al=this.aliveIds(g);
+    const timeUp=Date.now()>=g.endAt;
+    if(al.length>1&&!timeUp)return false;
+    const rank=g.order.filter(id=>P(id)).sort((a,b)=>this.total(g,b)-this.total(g,a));
+    const best=rank.length?this.total(g,rank[0]):0;
+    const winners=rank.filter(id=>this.total(g,id)===best&&best>0);
+    g.log.push(timeUp?'⏰ 시간 종료! 카드가 가장 많은 사람이 승리':'🏁 혼자 남았어요!');
+    finishGame(rank,id=>'카드 '+this.total(g,id)+'장'+(g.alive[id]?'':' · 탈락'),winners);
+    return true;
+  },
+  flip(pid){
+    const g=S.g;if(g.stage!=='play'||g.order[g.turn]!==pid)return;
+    const d=g.decks[pid];
+    if(!d.length){g.alive[pid]=false;}
+    else{g.up[pid].push(d.shift());g.seq++;g.rings={};g.bell={x:Math.random(),y:Math.random()};g.last=null;}
+    if(this.endCheck())return;
+    if(!this.nextTurn(g.turn)){this.endCheck();return;}
+    this.arm();broadcast();
+  },
+  ring(pid,a){
+    const g=S.g;
+    if((g.stage!=='play'&&g.stage!=='ring')||a.seq!==g.seq||!g.alive[pid]||g.rings[pid]!=null)return;
+    let rt=Math.round(+a.rt);if(!(rt>=0))return;rt=Math.max(rt,60);
+    g.rings[pid]=rt;
+    if(g.stage==='play'){
+      g.stage='ring';clearHostTimer();
+      const seq=g.seq;setTimeout(()=>this.resolve(g,seq),this.T.window);
+    }
+    broadcast();
+  },
+  resolve(g,seq){
+    if(!S||S.phase!=='game'||S.g!==g||g.seq!==seq||g.stage!=='ring')return;
+    const cands=Object.keys(g.rings).filter(id=>g.alive[id]).sort((a,b)=>g.rings[a]-g.rings[b]);
+    const f=this.isFive(g);
+    if(f>=0&&cands.length){
+      const w=cands[0];let n=0;const won=[];
+      g.order.forEach(id=>{n+=g.up[id].length;won.push(...g.up[id]);g.up[id]=[];});
+      g.decks[w].push(...shuffle(won));
+      g.last={ok:true,who:w,fruit:f,n,rt:g.rings[w],others:cands.slice(1).map(id=>[id,g.rings[id]])};
+      g.log.push('🛎️ '+this.nm(w)+' 님 정답! '+FRUITS[f]+' 5개 → 카드 '+n+'장 획득 ('+(g.rings[w]/1000).toFixed(2)+'초)');
+      g.turn=g.order.indexOf(w);
+    }else{
+      const pays=[];
+      cands.forEach(id=>{
+        let paid=0;
+        this.aliveIds(g).forEach(o=>{if(o!==id&&g.decks[id].length){g.decks[o].push(g.decks[id].shift());paid++;}});
+        pays.push([id,paid]);
+        g.log.push('❌ '+this.nm(id)+' 님 땡! 5개가 아니에요 → 카드 '+paid+'장 벌칙');
+      });
+      g.last={ok:false,pays};
+    }
+    g.seq++;g.rings={};g.stage='play';
+    if(this.endCheck())return;
+    const cur=g.order[g.turn];
+    if(!g.alive[cur]||!g.decks[cur].length){if(!this.nextTurn(g.turn)){this.endCheck();return;}}
+    this.arm();broadcast();
+  },
+  action(pid,a){
+    if(a.type==='fflip')this.flip(pid);
+    else if(a.type==='fring')this.ring(pid,a);
+  },
+  leave(pid){
+    const g=S.g;if(!g.order.includes(pid))return;
+    g.alive[pid]=false;g.log.push('🚪 '+this.nm(pid)+' 님이 나갔어요.');
+    if(this.endCheck())return;
+    if(g.order[g.turn]===pid&&g.stage==='play'){if(this.nextTurn(g.turn))this.arm();else this.endCheck();}
+  },
+  viewFor(pid){
+    const g=S.g,v=JSON.parse(JSON.stringify(g));
+    v.deckN={};v.top={};v.upN={};
+    g.order.forEach(id=>{v.deckN[id]=g.decks[id].length;v.upN[id]=g.up[id].length;const u=g.up[id];v.top[id]=u.length?u[u.length-1]:null;});
+    delete v.decks;delete v.up;
+    return v;
+  },
+  view(){return isHost?this.viewFor(myId):S.g;},
+  myTurn(){if(!S||S.phase!=='game')return false;const g=this.view();return g.stage==='play'&&g.order[g.turn]===myId;},
+  formula(){return '=SUMIF(과일재고!A:A,"🍓",B:B)=5';},
+  cardHTML(c){
+    if(!c)return '<div class="fr-card empty">비어 있음</div>';
+    return '<div class="fr-card n'+c.n+'">'+(FRUITS[c.f]+' ').repeat(c.n).trim().split(' ').map(x=>'<span>'+x+'</span>').join('')+'</div>';
+  },
+  render(){
+    const g=this.view(),st=S.phase==='game'?g.stage:'end',me=g.order.includes(myId);
+    if(LF.key!==g.key){LF.key=g.key;LF.seq=-1;LF.rang=-1;}
+    if(g.seq!==LF.seq){LF.seq=g.seq;LF.t=performance.now();}
+    const nm=id=>esc(g.names[id]||'?');
+    const cur=g.order[g.turn];
+    let h='<div class="row"><div class="sec"><div class="ttl">과일 재고 실사표</div><div class="bar">';
+    if(S.phase==='game'){
+      h+='<span>전체 남은 시간 <b data-dl="'+g.endAt+'"></b></span>';
+      if(st==='play')h+=g.order[g.turn]===myId?'<span class="stat bad">· 내 차례!</span><button class="xb pri" data-a="fflip">🂠 카드 뒤집기</button><span class="hint">(<span data-dl="'+g.deadline+'"></span> 뒤 자동)</span>':'<span>· '+nm(cur)+' 님 차례 (<span data-dl="'+g.deadline+'"></span>)</span>';
+      if(st==='ring')h+='<span class="stat bad">· 🛎️ 종이 울렸어요! 판정 중…</span>';
+    }
+    h+='</div><div class="fr-table">';
+    g.order.forEach(id=>{
+      const c=g.top[id],on=st==='play'&&id===cur;
+      h+='<div class="fr-seat'+(on?' on':'')+(g.alive[id]?'':' out')+'"><div class="fr-name"><span class="dot" style="background:'+pcol(id)+'"></span>'+(P(id)?nameHTML(id):nm(id))+(id===myId?' (나)':'')+'</div>'+this.cardHTML(c)+'<div class="fr-cnt">🂠 덱 '+g.deckN[id]+'장 · 펼침 '+g.upN[id]+'장'+(g.alive[id]?'':' · 탈락')+'</div></div>';
+    });
+    h+='</div>';
+    // 종 (매번 위치가 바뀌어요)
+    const rang=LF.rang===g.seq||(g.rings&&g.rings[myId]!=null);
+    h+='<div class="fr-arena">';
+    if(S.phase==='game'&&me&&g.alive[myId]){
+      const x=(g.bell.x*88).toFixed(1),y=(g.bell.y*62).toFixed(1);
+      h+='<button class="fr-bell'+(rang?' rang':'')+'" data-a="fring" style="left:'+x+'%;top:'+y+'%"'+(rang?' disabled':'')+'>🛎️</button>';
+    }else h+='<div class="fr-arena-msg">'+(S.phase==='game'?(me?'탈락했어요. 구경하면서 응원해 주세요!':'관전 중'):'게임 종료')+'</div>';
+    h+='</div><div class="hint">펼쳐진 카드 중 <b>같은 과일이 합쳐서 딱 5개</b>가 되면 종을 클릭! 종은 카드가 뒤집힐 때마다 자리를 옮겨요. 잘못 치면 다른 사람들에게 1장씩 줘요.</div>';
+    if(g.last){
+      if(g.last.ok)h+='<div class="mf-ann">🛎️ <b>'+nm(g.last.who)+'</b> 님 정답! '+FRUITS[g.last.fruit]+' 5개 · 카드 '+g.last.n+'장 획득 · 반응 '+(g.last.rt/1000).toFixed(2)+'초'+(g.last.others.length?' <span style="font-weight:400">(뒤이어: '+g.last.others.map(([id,t])=>nm(id)+' '+(t/1000).toFixed(2)+'초').join(', ')+')</span>':'')+'</div>';
+      else h+='<div class="mf-ann" style="background:#ffc7ce;border-color:#c00000;color:#9c0006">❌ 땡! 5개가 아니었어요: '+g.last.pays.map(([id,n])=>nm(id)+' 벌칙 '+n+'장').join(', ')+'</div>';
+    }
+    h+='</div><div class="sec"><div class="ttl">재고 현황</div><table class="xt"><tr><th>이름</th><th>보유 카드</th></tr>';
+    g.order.slice().sort((a,b)=>(g.deckN[b]+g.upN[b])-(g.deckN[a]+g.upN[a])).forEach(id=>{
+      h+='<tr class="'+(g.alive[id]?'':'dead')+'"><td><span class="dot" style="background:'+pcol(id)+'"></span>'+nm(id)+(id===myId?' (나)':'')+'</td><td>'+(g.deckN[id]+g.upN[id])+'장</td></tr>';
+    });
+    h+='</table><div class="sub">📰 기록</div><table class="xt log">'+[...g.log].reverse().slice(0,8).map(t=>'<tr><td>'+esc(t)+'</td></tr>').join('')+'</table>';
+    h+='<div class="hint">반응 시간은 각자 화면에 카드가 뜬 순간부터 재서, 인터넷 속도와 상관없이 공정하게 판정해요.</div></div></div>';
+    return h;
+  }
+};
+function fruitRing(){
+  if(!S||S.phase!=='game'||S.game!=='fruit')return;
+  if(LF.rang===LF.seq)return;
+  LF.rang=LF.seq;
+  const rt=performance.now()-LF.t;
+  act({type:'fring',seq:LF.seq,rt});
+  lastHTML=null;render();
+}
+/* ===================== 게임 8: 원카드 (2~6명) ===================== */
+const OC_SUIT={S:'♠',H:'♥',D:'♦',C:'♣'};
+const ocSuit=c=>c[0];
+const ocRank=c=>c.slice(1);
+const ocJoker=c=>c[0]==='X';
+const ocAtk=c=>c==='XC'?7:c==='XB'?5:c==='SA'?5:ocRank(c)==='A'?3:ocRank(c)==='2'?2:0;
+const LOC={pick7:null};
+const ONECARD={
+  name:'원카드',sheet:'카드정산',min:2,max:6,
+  desc:'무늬나 숫자를 맞춰 내고 먼저 다 털면 승리! 공격(2·A·조커), J·Q·K·7 특수 카드, 원카드 버튼',
+  T:{turn:20},BANKRUPT:20,
+  start(){
+    const ids=S.players.map(p=>p.id).slice(0,6);
+    const deck=[];
+    'SHDC'.split('').forEach(s=>['A','2','3','4','5','6','7','8','9','10','J','Q','K'].forEach(r=>deck.push(s+r)));
+    deck.push('XB','XC');shuffle(deck);
+    const n=ids.length<=4?7:5;
+    const g={order:ids,names:{},hands:{},out:{},deck,pile:[],suit:null,attack:0,dir:1,turn:0,oneCard:null,log:[],last:'',deadline:0};
+    ids.forEach(id=>{g.names[id]=pname(id);g.hands[id]=deck.splice(0,n);});
+    // 첫 바닥 카드는 특수 카드가 아닌 걸로
+    let i=deck.findIndex(c=>!ocJoker(c)&&!ocAtk(c)&&!['7','J','Q','K'].includes(ocRank(c)));
+    const first=deck.splice(i,1)[0];g.pile.push(first);g.suit=ocSuit(first);
+    g.turn=Math.floor(Math.random()*ids.length);
+    g.log.push('🃏 첫 카드: '+this.label(first));
+    S.g=g;this.arm();
+  },
+  nm(id){return (S.g&&S.g.names[id])||pname(id);},
+  label(c){return ocJoker(c)?(c==='XC'?'컬러 조커':'흑백 조커'):OC_SUIT[ocSuit(c)]+ocRank(c);},
+  alive(g){return g.order.filter(id=>!g.out[id]);},
+  top(g){return g.pile[g.pile.length-1];},
+  canPlay(g,c){
+    const top=this.top(g),topJ=ocJoker(top);
+    if(ocJoker(c))return true;
+    if(g.attack>0){if(!ocAtk(c))return false;return topJ||ocSuit(c)===g.suit||ocRank(c)===ocRank(top);}
+    if(topJ&&!g.suit)return true;
+    return ocSuit(c)===g.suit||ocRank(c)===ocRank(top);
+  },
+  drawCards(g,n){
+    const out=[];
+    for(let k=0;k<n;k++){
+      if(!g.deck.length){const top=g.pile.pop();g.deck=shuffle(g.pile);g.pile=[top];if(!g.deck.length)break;}
+      out.push(g.deck.pop());
+    }
+    return out;
+  },
+  arm(){
+    const g=S.g;g.deadline=Date.now()+this.T.turn*1000;
+    setHostTimer(this.T.turn*1000+300,()=>{if(S&&S.phase==='game'&&S.g===g){const id=g.order[g.turn];g.log.push('⏰ '+this.nm(id)+' 님 시간 초과');this.draw(id,true);}});
+  },
+  advance(step){
+    const g=S.g;const n=g.order.length;let t=g.turn;
+    for(let s=0;s<step;s++){do{t=(t+g.dir+n)%n;}while(g.out[g.order[t]]);}
+    g.turn=t;this.arm();
+  },
+  finish(winner){
+    const g=S.g;
+    const al=this.alive(g).filter(id=>id!==winner&&P(id)).sort((a,b)=>g.hands[a].length-g.hands[b].length);
+    const outs=g.order.filter(id=>g.out[id]&&P(id));
+    const rank=(winner&&P(winner)?[winner]:[]).concat(al,outs);
+    finishGame(rank,id=>id===winner?'🎉 카드 다 털기 성공!':g.out[id]?'💸 파산':'남은 카드 '+g.hands[id].length+'장',winner?[winner]:[]);
+  },
+  bankruptCheck(id){
+    const g=S.g;
+    if(g.hands[id].length>=this.BANKRUPT&&!g.out[id]){
+      g.out[id]=true;g.deck.unshift(...g.hands[id]);g.log.push('💸 '+this.nm(id)+' 님 파산! ('+g.hands[id].length+'장)');
+      if(g.oneCard&&g.oneCard.id===id)g.oneCard=null;
+      const al=this.alive(g);if(al.length<=1){this.finish(al[0]);return true;}
+    }
+    return false;
+  },
+  play(pid,c,suit){
+    const g=S.g;if(g.order[g.turn]!==pid)return;
+    const hand=g.hands[pid],i=hand.indexOf(c);if(i<0||!this.canPlay(g,c))return;
+    hand.splice(i,1);g.pile.push(c);
+    const r=ocRank(c),atk=ocAtk(c);
+    g.suit=ocJoker(c)?null:(r==='7'&&OC_SUIT[suit]?suit:ocSuit(c));
+    if(atk)g.attack+=atk;
+    let msgt=this.nm(pid)+' → '+this.label(c);
+    if(atk)msgt+=' ⚔️ 공격 +'+atk+' (누적 '+g.attack+')';
+    if(r==='7'&&OC_SUIT[suit])msgt+=' · 무늬를 '+OC_SUIT[suit]+'(으)로';
+    let step=1;
+    if(!ocJoker(c)){
+      if(r==='J'){step=2;msgt+=' · 다음 사람 건너뛰기';}
+      else if(r==='Q'){if(this.alive(g).length===2){step=2;}else g.dir*=-1;msgt+=' · 방향 바꾸기';}
+      else if(r==='K'){step=0;msgt+=' · 한 번 더!';}
+    }
+    g.log.push(msgt);g.last=c;
+    if(!hand.length){g.log.push('🎉 '+this.nm(pid)+' 님이 카드를 다 털었어요!');this.finish(pid);return;}
+    if(hand.length===1)g.oneCard={id:pid,done:false};
+    else if(g.oneCard&&g.oneCard.id===pid)g.oneCard=null;
+    if(step===0)this.arm();else this.advance(step);
+    broadcast();
+  },
+  draw(pid,auto){
+    const g=S.g;if(g.order[g.turn]!==pid)return;
+    const n=g.attack>0?g.attack:1;
+    const got=this.drawCards(g,n);g.hands[pid].push(...got);
+    g.log.push((g.attack>0?'💥 ':'')+this.nm(pid)+' 님이 '+got.length+'장 먹었어요'+(g.attack>0?' (공격)':''));
+    g.attack=0;
+    if(g.oneCard&&g.oneCard.id===pid&&g.hands[pid].length>1)g.oneCard=null;
+    if(this.bankruptCheck(pid))return;
+    this.advance(1);broadcast();
+  },
+  oneCardPress(pid){
+    const g=S.g;const oc=g.oneCard;if(!oc||oc.done||g.out[pid])return;
+    oc.done=true;
+    if(pid===oc.id)g.log.push('☝️ '+this.nm(pid)+' 님 "원카드!" 선언 성공');
+    else{
+      const got=this.drawCards(g,1);g.hands[oc.id].push(...got);
+      g.log.push('👉 '+this.nm(pid)+' 님이 먼저 눌렀어요! '+this.nm(oc.id)+' 님 벌칙 1장');
+      g.oneCard=null;
+      if(this.bankruptCheck(oc.id))return;
+    }
+    broadcast();
+  },
+  action(pid,a){
+    const g=S.g;if(!g.order.includes(pid)||g.out[pid])return;
+    if(a.type==='ocplay')this.play(pid,String(a.c||''),a.s);
+    else if(a.type==='ocdraw')this.draw(pid);
+    else if(a.type==='ocone')this.oneCardPress(pid);
+  },
+  leave(pid){
+    const g=S.g;if(!g.order.includes(pid)||g.out[pid])return;
+    g.out[pid]=true;g.deck.unshift(...g.hands[pid]);g.log.push('🚪 '+this.nm(pid)+' 님이 나갔어요.');
+    if(g.oneCard&&g.oneCard.id===pid)g.oneCard=null;
+    const al=this.alive(g);if(al.length<=1){this.finish(al[0]);return;}
+    if(g.order[g.turn]===pid)this.advance(1);
+  },
+  viewFor(pid){
+    const g=S.g,v=JSON.parse(JSON.stringify(g));
+    v.handN={};g.order.forEach(id=>v.handN[id]=g.hands[id].length);
+    v.hands={};if(g.hands[pid]&&S.phase==='game')v.hands[pid]=g.hands[pid].slice();
+    if(S.phase!=='game')v.hands=JSON.parse(JSON.stringify(g.hands));
+    v.deckN=g.deck.length;delete v.deck;
+    v.pileN=g.pile.length;v.pile=g.pile.slice(-1);
+    return v;
+  },
+  view(){return isHost?this.viewFor(myId):S.g;},
+  myTurn(){if(!S||S.phase!=='game')return false;const g=this.view();return g.order[g.turn]===myId&&!g.out[myId];},
+  formula(){const g=this.view();return '=COUNTIF(카드정산!A:A,"'+(g.suit?OC_SUIT[g.suit]:'★')+'")';},
+  cardHTML(c,cls,attrs){
+    if(ocJoker(c))return '<span class="occ joker '+(c==='XC'?'color ':'')+(cls||'')+'" '+(attrs||'')+'>🃏<small>'+(c==='XC'?'컬러':'흑백')+'</small></span>';
+    const s=ocSuit(c),red=s==='H'||s==='D';
+    return '<span class="occ '+(red?'red ':'')+(cls||'')+'" '+(attrs||'')+'><b>'+ocRank(c)+'</b>'+OC_SUIT[s]+'</span>';
+  },
+  render(){
+    const g=this.view(),play=S.phase==='game',cur=g.order[g.turn],my=play&&cur===myId&&!g.out[myId];
+    const nm=id=>esc(g.names[id]||'?');
+    const top=g.pile[g.pile.length-1];
+    if(!my)LOC.pick7=null;
+    let h='<div class="row"><div class="sec"><div class="ttl">카드 정산표</div><div class="bar">';
+    if(play)h+=(my?'<span class="stat bad">내 차례!</span>':'<span class="stat">'+nm(cur)+' 님 차례</span>')+'<span>· 남은 시간 <span data-dl="'+g.deadline+'"></span></span><span>· 진행 방향 '+(g.dir===1?'⬇️ 순서대로':'⬆️ 거꾸로')+'</span>';
+    h+='</div><div class="oc-board"><div class="oc-pile"><div class="k">바닥 카드</div>'+this.cardHTML(top,'big')+'</div><div class="oc-info">';
+    h+='<div>현재 무늬: <b class="oc-suit'+(g.suit==='H'||g.suit==='D'?' red':'')+'">'+(g.suit?OC_SUIT[g.suit]:'아무거나 (조커)')+'</b></div>';
+    h+='<div>남은 덱: '+g.deckN+'장</div>';
+    if(g.attack>0)h+='<div class="oc-atk">⚔️ 공격 +'+g.attack+' 누적!<small>공격 카드로 받아치거나 '+g.attack+'장 먹기</small></div>';
+    h+='</div></div>';
+    // 원카드 버튼 (누구나)
+    if(play&&g.oneCard&&!g.oneCard.done&&!g.out[myId]&&g.order.includes(myId)){
+      const mine=g.oneCard.id===myId;
+      h+='<div class="bar"><button class="xb oc-one" data-a="ocone">☝️ 원카드!</button><span class="'+(mine?'bad':'stat')+'">'+(mine?'카드가 1장! 먼저 누르세요!':nm(g.oneCard.id)+' 님이 1장 남았어요! 먼저 누르면 벌칙 1장')+'</span></div>';
+    }
+    // 내 손패
+    const hand=(g.hands&&g.hands[myId])||[];
+    if(g.order.includes(myId)&&play){
+      if(g.out[myId])h+='<div class="mf-ann">💸 파산했어요. 구경하면서 응원해 주세요!</div>';
+      else{
+        h+='<div class="sub">내 카드 ('+hand.length+'장)'+(my?' — 낼 수 있는 카드는 초록 테두리':'')+'</div><div class="oc-hand">';
+        hand.slice().sort((a,b)=>a.localeCompare(b)).forEach(c=>{const ok=my&&this.canPlay(g,c);h+=this.cardHTML(c,(ok?'ok':'')+(LOC.pick7===c?' sel':''),ok?'data-a="ocplay" data-v="'+c+'"':'');});
+        h+='</div>';
+        if(my&&LOC.pick7){
+          h+='<div class="bar"><span class="stat">7을 냈어요! 바꿀 무늬:</span>'+Object.keys(OC_SUIT).map(s=>'<button class="xb oc-sbtn'+(s==='H'||s==='D'?' red':'')+'" data-a="ocsuit" data-v="'+s+'">'+OC_SUIT[s]+'</button>').join('')+'<button class="xb" data-a="occancel">취소</button></div>';
+        }else if(my){
+          h+='<div class="bar"><button class="xb" data-a="ocdraw">🂠 카드 먹기 ('+(g.attack>0?g.attack:1)+'장)</button><span class="hint">낼 카드가 없으면 먹고 차례를 넘겨요</span></div>';
+        }
+      }
+    }else if(!g.order.includes(myId))h+='<div class="mf-ann">👀 관전 중이에요.</div>';
+    h+='</div>';
+    // 플레이어 현황
+    h+='<div class="sec"><div class="ttl">참가자 현황</div><table class="xt"><tr><th>순서</th><th>이름</th><th>카드</th><th>상태</th></tr>';
+    g.order.forEach((id,i)=>{
+      const n=g.handN[id],st=g.out[id]?'💸 파산':(play&&id===cur?'▶ 차례':'')+(g.oneCard&&g.oneCard.id===id?' ☝️ 1장!':'');
+      h+='<tr class="'+(g.out[id]?'dead':(play&&id===cur?'win':''))+'"><td>'+(i+1)+'</td><td><span class="dot" style="background:'+pcol(id)+'"></span>'+(P(id)?nameHTML(id):nm(id))+(id===myId?' (나)':'')+'</td><td>'+(g.out[id]?'-':n+'장 '+'<span class="oc-back">'+'▮'.repeat(Math.min(n,12))+'</span>')+'</td><td>'+st+'</td></tr>';
+    });
+    h+='</table><div class="sub">📰 기록</div><table class="xt log">'+[...g.log].reverse().slice(0,9).map(t=>'<tr><td>'+esc(t)+'</td></tr>').join('')+'</table>';
+    h+='<div class="hint" style="max-width:420px;white-space:normal">공격: 2(+2) · A(+3) · ♠A(+5) · 흑백조커(+5) · 컬러조커(+7) | J 건너뛰기 · Q 방향 바꾸기 · K 한 번 더 · 7 무늬 바꾸기 | '+this.BANKRUPT+'장 이상이면 파산</div>';
+    if(!play&&g.hands){
+      h+='<div class="sub">🂡 마지막 손패 공개</div><table class="xt">'+g.order.map(id=>'<tr><td>'+nm(id)+'</td><td>'+((g.hands[id]||[]).map(c=>this.cardHTML(c,'mini')).join('')||'-')+'</td></tr>').join('')+'</table>';
+    }
+    h+='</div></div>';
+    return h;
+  }
+};
+function ocPlayClick(c){
+  if(!S||S.phase!=='game'||S.game!=='onecard')return;
+  if(ocRank(c)==='7'&&!ocJoker(c)){LOC.pick7=c;lastHTML=null;render();return;}
+  act({type:'ocplay',c});
+}
+
+const GAMES={mine:MINE,bingo:BINGO,word:WORD,omok:OMOK,mafia:MAFIA,liar:LIAR,fruit:FRUIT,onecard:ONECARD};
 
 /* ===================== 화면 ===================== */
 const HOME_GAMES=[
@@ -1317,7 +1772,9 @@ const HOME_GAMES=[
   ['💬','끝말잇기','제한시간 안에 단어 잇기, 두음법칙 OK (2~10명)'],
   ['⚫','오목','흑백 번갈아 5개 먼저 이으면 승리 (2명)'],
   ['🕴️','마피아','마피아·경찰·의사·시민, 토론과 투표로 범인 찾기 (6~10명)'],
-  ['🤥','라이어 게임','한 명만 제시어를 몰라요, 힌트로 라이어 찾기 (3~10명)']
+  ['🤥','라이어 게임','한 명만 제시어를 몰라요, 힌트로 라이어 찾기 (3~10명)'],
+  ['🛎️','과일 종치기','같은 과일이 5개면 움직이는 종을 먼저 클릭 (2~6명)'],
+  ['🃏','원카드','무늬·숫자 맞춰 내고 먼저 다 털기, 공격 카드 있음 (2~6명)']
 ];
 function homeHTML(){
   const nm=esc(myName||ls('xlsmini-name')||'');
@@ -1372,8 +1829,13 @@ function badgeHTML(){
   return h;
 }
 function resultHTML(){
-  let h='<div class="sec"><div class="ttl">📊 결과 보고 — '+esc(GAMES[S.game].name)+'</div><table class="xt"><tr><th>순위</th><th>이름</th><th>기록</th></tr>';
-  S.result.rows.forEach((r,i)=>{h+='<tr class="'+(r.win?'win':'')+'"><td>'+(i+1)+'</td><td>'+(r.win?'🏆 ':'')+fmtName(r.name,r.ti,r.nc)+(r.id===myId?' (나)':'')+'</td><td>'+esc(r.d)+'</td></tr>';});
+  const G=GAMES[S.game],team=G.resultTitle?G.resultTitle():'',me=S.result.rows.find(r=>r.id===myId),anyWin=S.result.rows.some(r=>r.win);
+  let h='<div class="sec"><div class="ttl">📊 결과 보고 — '+esc(G.name)+'</div>';
+  if(!anyWin)h+='<div class="wl-banner draw">🤝 무승부!'+(team?'<span class="sm">'+team+'</span>':'')+'</div>';
+  else if(me)h+='<div class="wl-banner '+(me.win?'win':'lose')+'">'+(me.win?'🏆 승리했어요!':'😢 아쉽게 졌어요')+'<span class="sm">'+(team||(S.result.rows.filter(r=>r.win).map(r=>esc(r.name)).join(', ')+' 승리'))+'</span></div>';
+  else if(team)h+='<div class="wl-banner draw">'+team+'</div>';
+  h+='<table class="xt"><tr><th>순위</th><th>이름</th><th>결과</th><th>기록</th></tr>';
+  S.result.rows.forEach((r,i)=>{h+='<tr class="'+(r.win?'win':'lose')+'"><td>'+(i+1)+'</td><td>'+(r.win?'🏆 ':'')+fmtName(r.name,r.ti,r.nc)+(r.id===myId?' (나)':'')+'</td><td>'+(anyWin?(r.win?'<b style="color:#006100">승리</b>':'<b style="color:#9c0006">패배</b>'):'무승부')+'</td><td>'+esc(r.d)+'</td></tr>';});
   h+='</table><div class="bar" style="margin-top:6px">'+(isHost?'<button class="xb pri" data-a="again">한 판 더</button><button class="xb" data-a="lobby">다른 게임 고르기</button>':'<span class="hint">방장이 다음 판을 고르는 중...</span>')+'</div></div>';
   return h;
 }
@@ -1384,6 +1846,8 @@ function myTurn(){
   if(S.game==='omok')return OMOK.cur()===myId;
   if(S.game==='mafia')return MAFIA.myTurn();
   if(S.game==='liar')return LIAR.myTurn();
+  if(S.game==='fruit')return FRUIT.myTurn();
+  if(S.game==='onecard')return ONECARD.myTurn();
   return false;
 }
 function formulaText(){
@@ -1570,7 +2034,14 @@ $('#content').addEventListener('click',e=>{
     case 'lgo':act({type:'lgo'});break;
     case 'lnext':act({type:'lnext'});break;
     case 'lhint':sendLiar('lhint','lhIn');break;
-    case 'lskip':act({type:'lskip'});break;
+    case 'lchoice':act({type:'lchoice',c:v});break;
+    case 'fflip':act({type:'fflip'});break;
+    case 'fring':fruitRing();break;
+    case 'ocplay':ocPlayClick(v);break;
+    case 'ocsuit':if(LOC.pick7){const c=LOC.pick7;LOC.pick7=null;act({type:'ocplay',c,s:v});}break;
+    case 'occancel':LOC.pick7=null;lastHTML=null;render();break;
+    case 'ocdraw':act({type:'ocdraw'});break;
+    case 'ocone':act({type:'ocone'});break;
     case 'lforce':if(confirm('토론을 끝내고 투표로 넘어갈까요?'))act({type:'lforce'});break;
     case 'lvote':act({type:'lvote',t:v});break;
     case 'lguess':sendLiar('lguess','lgIn');break;
