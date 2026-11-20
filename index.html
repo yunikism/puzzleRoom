@@ -197,7 +197,8 @@ body.nomemo #side{display:none}
 .occ small{font-size:10px}
 .occ.ok{border:3px solid #00a050;cursor:pointer;box-shadow:0 2px 0 #00a050}
 .occ.ok:hover{transform:translateY(-4px)}
-.occ.sel{outline:3px solid #ffc000}
+.occ.sel{outline:3px solid #ffc000;transform:translateY(-6px)}
+.occ.add{border:3px dashed #00a050;cursor:pointer}
 .oc-hand{display:flex;flex-wrap:wrap;max-width:680px;background:#fff;padding:4px 0}
 .oc-info{font-size:14px;line-height:1.9}
 .oc-suit{font-size:22px}.oc-suit.red{color:#c00000}
@@ -1398,15 +1399,16 @@ const LF={seq:-1,t:0,rang:-1,key:''}; // 내 화면 기준 반응시간 측정�
 const FRUIT={
   name:'과일 종치기',sheet:'과일재고',min:2,max:6,
   desc:'카드를 한 장씩 뒤집다가 같은 과일이 딱 5개가 되면 화면 어딘가로 움직이는 종을 먼저 클릭!',
-  T:{flip:5,limit:300,window:350},
+  T:{flip:5,limit:300,window:350,minGap:1500,pause:2000,grace:600},
+  // minGap: 카드 사이 최소 간격 · pause: 종 판정 후 쉬는 시간 · grace: 카드가 바뀐 직후 0.6초 안에 친 종은 직전 카드 기준으로 판정
   start(){
     const ids=S.players.map(p=>p.id).slice(0,6);
     const deck=[];
     for(let f=0;f<4;f++)[[1,5],[2,3],[3,3],[4,2],[5,1]].forEach(([n,c])=>{for(let k=0;k<c;k++)deck.push({f,n});});
     shuffle(deck);
     const g={stage:'play',order:ids,names:{},decks:{},up:{},alive:{},turn:0,seq:0,bell:{x:Math.random(),y:Math.random()},rings:{},
-             last:null,log:[],deadline:0,endAt:Date.now()+this.T.limit*1000,key:Date.now()+'-'+Math.random()};
-    ids.forEach(id=>{g.names[id]=pname(id);g.decks[id]=[];g.up[id]=[];g.alive[id]=true;});
+             last:null,log:[],deadline:0,lastFlip:0,prevFive:-1,stats:{},endAt:Date.now()+this.T.limit*1000,key:Date.now()+'-'+Math.random()};
+    ids.forEach(id=>{g.names[id]=pname(id);g.decks[id]=[];g.up[id]=[];g.alive[id]=true;g.stats[id]={ok:0,bad:0};});
     const per=Math.floor(deck.length/ids.length);
     ids.forEach((id,i)=>{g.decks[id]=deck.slice(i*per,(i+1)*per);});
     g.turn=Math.floor(Math.random()*ids.length);
@@ -1422,44 +1424,60 @@ const FRUIT={
   },
   arm(){
     const g=S.g;g.deadline=Date.now()+this.T.flip*1000;
-    setHostTimer(this.T.flip*1000+200,()=>{if(S&&S.phase==='game'&&S.g===g&&g.stage==='play')this.flip(g.order[g.turn]);});
+    setHostTimer(this.T.flip*1000+200,()=>{if(S&&S.phase==='game'&&S.g===g&&g.stage==='play')this.flip(g.order[g.turn],true);});
   },
-  // 다음 차례: 카드가 없는 사람은 그 차례에 탈락
+  // 공식 규칙: 뒤집을 카드가 다 떨어지는 순간 탈락 (펼친 카드는 누가 가져갈 때까지 그대로)
+  knock(id){
+    const g=S.g;
+    if(g.alive[id]&&!g.decks[id].length){g.alive[id]=false;g.log.push('💤 '+this.nm(id)+' 님 카드가 떨어져 탈락!');}
+  },
   nextTurn(from){
     const g=S.g;let t=from;
     for(let k=0;k<g.order.length;k++){
       t=(t+1)%g.order.length;const id=g.order[t];
-      if(!g.alive[id])continue;
-      if(!g.decks[id].length){g.alive[id]=false;g.log.push('💤 '+this.nm(id)+' 님은 낼 카드가 없어 탈락했어요.');continue;}
-      g.turn=t;return true;
+      if(g.alive[id]&&g.decks[id].length){g.turn=t;return true;}
     }
     return false;
   },
+  // 승리: ① 혼자 남으면 승리(공식)  ② 5분이 지나면 카드 많은 순 → 동점이면 종 정답 많은 순 → 그래도 같으면 오답 적은 순
   endCheck(){
     const g=S.g,al=this.aliveIds(g);
     const timeUp=Date.now()>=g.endAt;
     if(al.length>1&&!timeUp)return false;
-    const rank=g.order.filter(id=>P(id)).sort((a,b)=>this.total(g,b)-this.total(g,a));
-    const best=rank.length?this.total(g,rank[0]):0;
-    const winners=rank.filter(id=>this.total(g,id)===best&&best>0);
-    g.log.push(timeUp?'⏰ 시간 종료! 카드가 가장 많은 사람이 승리':'🏁 혼자 남았어요!');
-    finishGame(rank,id=>'카드 '+this.total(g,id)+'장'+(g.alive[id]?'':' · 탈락'),winners);
+    const st=id=>g.stats[id]||{ok:0,bad:0};
+    const cmp=(a,b)=>(g.alive[b]?1:0)-(g.alive[a]?1:0)||this.total(g,b)-this.total(g,a)||st(b).ok-st(a).ok||st(a).bad-st(b).bad;
+    const rank=g.order.filter(id=>P(id)).sort(cmp);
+    let winners=[];
+    if(al.length===1&&!timeUp)winners=[al[0]].filter(id=>P(id));
+    else if(rank.length)winners=rank.filter(id=>cmp(id,rank[0])===0);
+    g.log.push(al.length<=1&&!timeUp?'🏁 '+(al[0]?this.nm(al[0])+' 님 혼자 남았어요!':'모두 탈락'):'⏰ 시간 종료! 카드 수 → 종 정답 수 → 오답 수 순으로 순위 결정');
+    finishGame(rank,id=>'카드 '+this.total(g,id)+'장 · 종 정답 '+st(id).ok+'회 · 오답 '+st(id).bad+'회'+(g.alive[id]?'':' · 탈락'),winners);
     return true;
   },
-  flip(pid){
+  flip(pid,auto){
     const g=S.g;if(g.stage!=='play'||g.order[g.turn]!==pid)return;
+    if(!auto&&Date.now()-g.lastFlip<this.T.minGap)return; // 너무 빨리 연속으로 못 내게
     const d=g.decks[pid];
-    if(!d.length){g.alive[pid]=false;}
-    else{g.up[pid].push(d.shift());g.seq++;g.rings={};g.bell={x:Math.random(),y:Math.random()};g.last=null;}
+    if(d.length){
+      g.prevFive=this.isFive(g); // 이 카드 직전 상태가 5개였는지 기억 (간발의 차 판정용)
+      g.up[pid].push(d.shift());g.lastFlip=Date.now();g.seq++;g.rings={};g.bell={x:Math.random(),y:Math.random()};g.last=null;
+    }
+    this.knock(pid);
     if(this.endCheck())return;
     if(!this.nextTurn(g.turn)){this.endCheck();return;}
     this.arm();broadcast();
   },
   ring(pid,a){
     const g=S.g;
-    if((g.stage!=='play'&&g.stage!=='ring')||a.seq!==g.seq||!g.alive[pid]||g.rings[pid]!=null)return;
+    if((g.stage!=='play'&&g.stage!=='ring')||!g.alive[pid]||g.rings[pid]!=null)return;
     let rt=Math.round(+a.rt);if(!(rt>=0))return;rt=Math.max(rt,60);
-    g.rings[pid]=rt;
+    let prev=false;
+    if(a.seq===g.seq){
+      // 새 카드가 뜨자마자(0.6초 안) 친 종 = 사실은 직전 카드의 5개를 보고 친 것
+      if(this.isFive(g)<0&&g.prevFive>=0&&rt<this.T.grace)prev=true;
+    }else if(a.seq===g.seq-1&&g.prevFive>=0&&Date.now()-g.lastFlip<this.T.grace+800)prev=true;
+    else return;
+    g.rings[pid]={rt,prev};
     if(g.stage==='play'){
       g.stage='ring';clearHostTimer();
       const seq=g.seq;setTimeout(()=>this.resolve(g,seq),this.T.window);
@@ -1468,30 +1486,40 @@ const FRUIT={
   },
   resolve(g,seq){
     if(!S||S.phase!=='game'||S.g!==g||g.seq!==seq||g.stage!=='ring')return;
-    const cands=Object.keys(g.rings).filter(id=>g.alive[id]).sort((a,b)=>g.rings[a]-g.rings[b]);
-    const f=this.isFive(g);
+    const rt=id=>g.rings[id].rt;
+    const cands=Object.keys(g.rings).filter(id=>g.alive[id]).sort((a,b)=>rt(a)-rt(b));
+    const cur5=this.isFive(g),prevOK=g.prevFive>=0&&cands.some(id=>g.rings[id].prev);
+    const f=cur5>=0?cur5:(prevOK?g.prevFive:-1);
     if(f>=0&&cands.length){
       const w=cands[0];let n=0;const won=[];
       g.order.forEach(id=>{n+=g.up[id].length;won.push(...g.up[id]);g.up[id]=[];});
-      g.decks[w].push(...shuffle(won));
-      g.last={ok:true,who:w,fruit:f,n,rt:g.rings[w],others:cands.slice(1).map(id=>[id,g.rings[id]])};
-      g.log.push('🛎️ '+this.nm(w)+' 님 정답! '+FRUITS[f]+' 5개 → 카드 '+n+'장 획득 ('+(g.rings[w]/1000).toFixed(2)+'초)');
+      g.decks[w].push(...shuffle(won));g.stats[w].ok++;
+      g.last={ok:true,who:w,fruit:f,n,rt:rt(w),prev:cur5<0,others:cands.slice(1).map(id=>[id,rt(id)])};
+      g.log.push('🛎️ '+this.nm(w)+' 님 정답! '+FRUITS[f]+' 5개 → 카드 '+n+'장 획득 ('+(rt(w)/1000).toFixed(2)+'초)'+(cur5<0?' · 간발의 차 인정':''));
       g.turn=g.order.indexOf(w);
     }else{
       const pays=[];
       cands.forEach(id=>{
-        let paid=0;
+        let paid=0;g.stats[id].bad++;
         this.aliveIds(g).forEach(o=>{if(o!==id&&g.decks[id].length){g.decks[o].push(g.decks[id].shift());paid++;}});
         pays.push([id,paid]);
         g.log.push('❌ '+this.nm(id)+' 님 땡! 5개가 아니에요 → 카드 '+paid+'장 벌칙');
       });
       g.last={ok:false,pays};
+      cands.forEach(id=>this.knock(id));
     }
-    g.seq++;g.rings={};g.stage='play';
+    g.seq++;g.rings={};g.prevFive=-1;
     if(this.endCheck())return;
-    const cur=g.order[g.turn];
-    if(!g.alive[cur]||!g.decks[cur].length){if(!this.nextTurn(g.turn)){this.endCheck();return;}}
-    this.arm();broadcast();
+    // 판정 결과를 2초 동안 보여주고 다시 시작
+    g.stage='pause';g.deadline=Date.now()+this.T.pause;
+    broadcast();
+    setHostTimer(this.T.pause,()=>{
+      if(!S||S.phase!=='game'||S.g!==g||g.stage!=='pause')return;
+      g.stage='play';g.lastFlip=Date.now()-this.T.minGap;
+      const cur=g.order[g.turn];
+      if(!g.alive[cur]||!g.decks[cur].length){if(!this.nextTurn(g.turn)){this.endCheck();return;}}
+      this.arm();broadcast();
+    });
   },
   action(pid,a){
     if(a.type==='fflip')this.flip(pid);
@@ -1526,8 +1554,9 @@ const FRUIT={
     let h='<div class="row"><div class="sec"><div class="ttl">과일 재고 실사표</div><div class="bar">';
     if(S.phase==='game'){
       h+='<span>전체 남은 시간 <b data-dl="'+g.endAt+'"></b></span>';
-      if(st==='play')h+=g.order[g.turn]===myId?'<span class="stat bad">· 내 차례!</span><button class="xb pri" data-a="fflip">🂠 카드 뒤집기</button><span class="hint">(<span data-dl="'+g.deadline+'"></span> 뒤 자동)</span>':'<span>· '+nm(cur)+' 님 차례 (<span data-dl="'+g.deadline+'"></span>)</span>';
+      if(st==='play')h+=g.order[g.turn]===myId?'<span class="stat bad">· 내 차례!</span><button class="xb pri" data-a="fflip">🂠 카드 뒤집기 (스페이스바)</button><span class="hint">(<span data-dl="'+g.deadline+'"></span> 뒤 자동)</span>':'<span>· '+nm(cur)+' 님 차례 (<span data-dl="'+g.deadline+'"></span>)</span>';
       if(st==='ring')h+='<span class="stat bad">· 🛎️ 종이 울렸어요! 판정 중…</span>';
+      if(st==='pause')h+='<span class="stat">· ⏸️ 잠깐! 판정 결과 확인 중 (<span data-dl="'+g.deadline+'"></span>)</span>';
     }
     h+='</div><div class="fr-table">';
     g.order.forEach(id=>{
@@ -1536,23 +1565,24 @@ const FRUIT={
     });
     h+='</div>';
     // 종 (매번 위치가 바뀌어요)
-    const rang=LF.rang===g.seq||(g.rings&&g.rings[myId]!=null);
+    const rang=LF.rang===g.seq||(g.rings&&g.rings[myId]!=null)||st==='pause';
     h+='<div class="fr-arena">';
     if(S.phase==='game'&&me&&g.alive[myId]){
       const x=(g.bell.x*88).toFixed(1),y=(g.bell.y*62).toFixed(1);
       h+='<button class="fr-bell'+(rang?' rang':'')+'" data-a="fring" style="left:'+x+'%;top:'+y+'%"'+(rang?' disabled':'')+'>🛎️</button>';
     }else h+='<div class="fr-arena-msg">'+(S.phase==='game'?(me?'탈락했어요. 구경하면서 응원해 주세요!':'관전 중'):'게임 종료')+'</div>';
-    h+='</div><div class="hint">펼쳐진 카드 중 <b>같은 과일이 합쳐서 딱 5개</b>가 되면 종을 클릭! 종은 카드가 뒤집힐 때마다 자리를 옮겨요. 잘못 치면 다른 사람들에게 1장씩 줘요.</div>';
+    h+='</div><div class="hint">펼쳐진 카드 중 <b>같은 과일이 합쳐서 딱 5개</b>가 되면 종을 클릭! 종은 카드가 뒤집힐 때마다 자리를 옮겨요. 잘못 치면 다른 사람들에게 1장씩 줘요.<br>카드가 바뀐 직후 0.6초 안에 친 종은 <b>직전 카드 기준</b>으로 판정해요 (간발의 차 보호).</div>';
     if(g.last){
-      if(g.last.ok)h+='<div class="mf-ann">🛎️ <b>'+nm(g.last.who)+'</b> 님 정답! '+FRUITS[g.last.fruit]+' 5개 · 카드 '+g.last.n+'장 획득 · 반응 '+(g.last.rt/1000).toFixed(2)+'초'+(g.last.others.length?' <span style="font-weight:400">(뒤이어: '+g.last.others.map(([id,t])=>nm(id)+' '+(t/1000).toFixed(2)+'초').join(', ')+')</span>':'')+'</div>';
+      if(g.last.ok)h+='<div class="mf-ann">🛎️ <b>'+nm(g.last.who)+'</b> 님 정답! '+FRUITS[g.last.fruit]+' 5개 · 카드 '+g.last.n+'장 획득 · 반응 '+(g.last.rt/1000).toFixed(2)+'초'+(g.last.prev?' (간발의 차 인정)':'')+(g.last.others.length?' <span style="font-weight:400">(뒤이어: '+g.last.others.map(([id,t])=>nm(id)+' '+(t/1000).toFixed(2)+'초').join(', ')+')</span>':'')+'</div>';
       else h+='<div class="mf-ann" style="background:#ffc7ce;border-color:#c00000;color:#9c0006">❌ 땡! 5개가 아니었어요: '+g.last.pays.map(([id,n])=>nm(id)+' 벌칙 '+n+'장').join(', ')+'</div>';
     }
-    h+='</div><div class="sec"><div class="ttl">재고 현황</div><table class="xt"><tr><th>이름</th><th>보유 카드</th></tr>';
+    h+='</div><div class="sec"><div class="ttl">재고 현황</div><table class="xt"><tr><th>이름</th><th>보유 카드</th><th>종 정답</th><th>오답</th></tr>';
     g.order.slice().sort((a,b)=>(g.deckN[b]+g.upN[b])-(g.deckN[a]+g.upN[a])).forEach(id=>{
-      h+='<tr class="'+(g.alive[id]?'':'dead')+'"><td><span class="dot" style="background:'+pcol(id)+'"></span>'+nm(id)+(id===myId?' (나)':'')+'</td><td>'+(g.deckN[id]+g.upN[id])+'장</td></tr>';
+      const s2=(g.stats&&g.stats[id])||{ok:0,bad:0};
+      h+='<tr class="'+(g.alive[id]?'':'dead')+'"><td><span class="dot" style="background:'+pcol(id)+'"></span>'+nm(id)+(id===myId?' (나)':'')+'</td><td>'+(g.deckN[id]+g.upN[id])+'장</td><td>'+s2.ok+'</td><td>'+s2.bad+'</td></tr>';
     });
-    h+='</table><div class="sub">📰 기록</div><table class="xt log">'+[...g.log].reverse().slice(0,8).map(t=>'<tr><td>'+esc(t)+'</td></tr>').join('')+'</table>';
-    h+='<div class="hint">반응 시간은 각자 화면에 카드가 뜬 순간부터 재서, 인터넷 속도와 상관없이 공정하게 판정해요.</div></div></div>';
+    h+='</table><div class="sub">📰 기록</div><table class="xt">'+[...g.log].reverse().slice(0,8).map(t=>'<tr><td>'+esc(t)+'</td></tr>').join('')+'</table>';
+    h+='<div class="hint" style="max-width:360px;white-space:normal">🏆 승리: 혼자 남으면 승리. 5분이 지나면 <b>카드 수 → 종 정답 수 → 오답이 적은 순</b>으로 순위를 정해요. 반응 시간은 각자 화면 기준이라 인터넷 속도와 상관없이 공정해요.</div></div></div>';
     return h;
   }
 };
@@ -1570,7 +1600,7 @@ const ocSuit=c=>c[0];
 const ocRank=c=>c.slice(1);
 const ocJoker=c=>c[0]==='X';
 const ocAtk=c=>c==='XC'?7:c==='XB'?5:c==='SA'?5:ocRank(c)==='A'?3:ocRank(c)==='2'?2:0;
-const LOC={pick7:null};
+const LOC={sel:[]};
 const ONECARD={
   name:'원카드',sheet:'카드정산',min:2,max:6,
   desc:'무늬나 숫자를 맞춰 내고 먼저 다 털면 승리! 공격(2·A·조커), J·Q·K·7 특수 카드, 원카드 버튼',
@@ -1634,23 +1664,32 @@ const ONECARD={
     }
     return false;
   },
-  play(pid,c,suit){
+  // 같은 숫자는 여러 장 한 번에 낼 수 있어요 (첫 장만 바닥과 맞으면 OK)
+  play(pid,cs,suit){
     const g=S.g;if(g.order[g.turn]!==pid)return;
-    const hand=g.hands[pid],i=hand.indexOf(c);if(i<0||!this.canPlay(g,c))return;
-    hand.splice(i,1);g.pile.push(c);
-    const r=ocRank(c),atk=ocAtk(c);
-    g.suit=ocJoker(c)?null:(r==='7'&&OC_SUIT[suit]?suit:ocSuit(c));
+    const hand=g.hands[pid];
+    cs=[...new Set((Array.isArray(cs)?cs:[cs]).map(String))].filter(Boolean);
+    if(!cs.length||!cs.every(c=>hand.includes(c))||!this.canPlay(g,cs[0]))return;
+    const r=ocRank(cs[0]);
+    if(cs.length>1&&(ocJoker(cs[0])||!cs.every(c=>!ocJoker(c)&&ocRank(c)===r)))return;
+    cs.forEach(c=>{hand.splice(hand.indexOf(c),1);g.pile.push(c);});
+    const last=cs[cs.length-1],n=cs.length;
+    g.suit=ocJoker(last)?null:(r==='7'&&OC_SUIT[suit]?suit:ocSuit(last));
+    const atk=cs.reduce((a,c)=>a+ocAtk(c),0);
     if(atk)g.attack+=atk;
-    let msgt=this.nm(pid)+' → '+this.label(c);
+    let msgt=this.nm(pid)+' → '+cs.map(c=>this.label(c)).join(' ')+(n>1?' ('+n+'장 한꺼번에)':'');
     if(atk)msgt+=' ⚔️ 공격 +'+atk+' (누적 '+g.attack+')';
     if(r==='7'&&OC_SUIT[suit])msgt+=' · 무늬를 '+OC_SUIT[suit]+'(으)로';
     let step=1;
-    if(!ocJoker(c)){
-      if(r==='J'){step=2;msgt+=' · 다음 사람 건너뛰기';}
-      else if(r==='Q'){if(this.alive(g).length===2){step=2;}else g.dir*=-1;msgt+=' · 방향 바꾸기';}
+    if(!ocJoker(last)){
+      if(r==='J'){step=1+n;msgt+=' · '+n+'명 건너뛰기';}
+      else if(r==='Q'){
+        if(this.alive(g).length===2){step=1+n;msgt+=' · 방향 바꾸기 (2명이라 한 번 더)';}  // 2명일 땐 J처럼 작동
+        else{if(n%2)g.dir*=-1;msgt+=' · 방향 바꾸기'+(n%2?'':' ×'+n+' (원래대로)');}
+      }
       else if(r==='K'){step=0;msgt+=' · 한 번 더!';}
     }
-    g.log.push(msgt);g.last=c;
+    g.log.push(msgt);g.last=last;
     if(!hand.length){g.log.push('🎉 '+this.nm(pid)+' 님이 카드를 다 털었어요!');this.finish(pid);return;}
     if(hand.length===1)g.oneCard={id:pid,done:false};
     else if(g.oneCard&&g.oneCard.id===pid)g.oneCard=null;
@@ -1681,7 +1720,7 @@ const ONECARD={
   },
   action(pid,a){
     const g=S.g;if(!g.order.includes(pid)||g.out[pid])return;
-    if(a.type==='ocplay')this.play(pid,String(a.c||''),a.s);
+    if(a.type==='ocplay')this.play(pid,a.cs||a.c,a.s);
     else if(a.type==='ocdraw')this.draw(pid);
     else if(a.type==='ocone')this.oneCardPress(pid);
   },
@@ -1713,7 +1752,8 @@ const ONECARD={
     const g=this.view(),play=S.phase==='game',cur=g.order[g.turn],my=play&&cur===myId&&!g.out[myId];
     const nm=id=>esc(g.names[id]||'?');
     const top=g.pile[g.pile.length-1];
-    if(!my)LOC.pick7=null;
+    if(!my)LOC.sel=[];
+    LOC.sel=LOC.sel.filter(c=>((g.hands&&g.hands[myId])||[]).includes(c));
     let h='<div class="row"><div class="sec"><div class="ttl">카드 정산표</div><div class="bar">';
     if(play)h+=(my?'<span class="stat bad">내 차례!</span>':'<span class="stat">'+nm(cur)+' 님 차례</span>')+'<span>· 남은 시간 <span data-dl="'+g.deadline+'"></span></span><span>· 진행 방향 '+(g.dir===1?'⬇️ 순서대로':'⬆️ 거꾸로')+'</span>';
     h+='</div><div class="oc-board"><div class="oc-pile"><div class="k">바닥 카드</div>'+this.cardHTML(top,'big')+'</div><div class="oc-info">';
@@ -1731,11 +1771,23 @@ const ONECARD={
     if(g.order.includes(myId)&&play){
       if(g.out[myId])h+='<div class="mf-ann">💸 파산했어요. 구경하면서 응원해 주세요!</div>';
       else{
-        h+='<div class="sub">내 카드 ('+hand.length+'장)'+(my?' — 낼 수 있는 카드는 초록 테두리':'')+'</div><div class="oc-hand">';
-        hand.slice().sort((a,b)=>a.localeCompare(b)).forEach(c=>{const ok=my&&this.canPlay(g,c);h+=this.cardHTML(c,(ok?'ok':'')+(LOC.pick7===c?' sel':''),ok?'data-a="ocplay" data-v="'+c+'"':'');});
+        const sel=LOC.sel,r0=sel.length?ocRank(sel[0]):null;
+        h+='<div class="sub">내 카드 ('+hand.length+'장)'+(my?(sel.length?' — 같은 숫자를 더 고르면 한꺼번에 낼 수 있어요':' — 낼 수 있는 카드는 초록 테두리'):'')+'</div><div class="oc-hand">';
+        hand.slice().sort((a,b)=>a.localeCompare(b)).forEach(c=>{
+          let cls='',click=false;
+          if(my&&!sel.length&&this.canPlay(g,c)){cls='ok';click=true;}
+          else if(my&&sel.length){
+            if(sel.includes(c)){cls='sel';click=c!==sel[0];}
+            else if(!ocJoker(c)&&ocRank(c)===r0){cls='add';click=true;}
+          }
+          h+=this.cardHTML(c,cls,click?'data-a="ocplay" data-v="'+c+'"':'');
+        });
         h+='</div>';
-        if(my&&LOC.pick7){
-          h+='<div class="bar"><span class="stat">7을 냈어요! 바꿀 무늬:</span>'+Object.keys(OC_SUIT).map(s=>'<button class="xb oc-sbtn'+(s==='H'||s==='D'?' red':'')+'" data-a="ocsuit" data-v="'+s+'">'+OC_SUIT[s]+'</button>').join('')+'<button class="xb" data-a="occancel">취소</button></div>';
+        if(my&&sel.length){
+          h+='<div class="bar"><span class="stat">선택 '+sel.length+'장:</span>'+sel.map(c=>this.cardHTML(c,'mini')).join('');
+          if(r0==='7')h+='<span class="stat">바꿀 무늬 →</span>'+Object.keys(OC_SUIT).map(s=>'<button class="xb oc-sbtn'+(s==='H'||s==='D'?' red':'')+'" data-a="ocsuit" data-v="'+s+'">'+OC_SUIT[s]+'</button>').join('');
+          else h+='<button class="xb pri" data-a="ocgo">'+sel.length+'장 내기</button>';
+          h+='<button class="xb" data-a="occancel">취소</button></div>';
         }else if(my){
           h+='<div class="bar"><button class="xb" data-a="ocdraw">🂠 카드 먹기 ('+(g.attack>0?g.attack:1)+'장)</button><span class="hint">낼 카드가 없으면 먹고 차례를 넘겨요</span></div>';
         }
@@ -1759,9 +1811,16 @@ const ONECARD={
 };
 function ocPlayClick(c){
   if(!S||S.phase!=='game'||S.game!=='onecard')return;
-  if(ocRank(c)==='7'&&!ocJoker(c)){LOC.pick7=c;lastHTML=null;render();return;}
-  act({type:'ocplay',c});
+  const g=ONECARD.view(),hand=(g.hands&&g.hands[myId])||[];
+  if(!LOC.sel.length){
+    const same=!ocJoker(c)&&hand.some(x=>x!==c&&!ocJoker(x)&&ocRank(x)===ocRank(c));
+    if(!same&&ocRank(c)!=='7'){act({type:'ocplay',cs:[c]});return;} // 같은 숫자가 없으면 바로 내기
+    LOC.sel=[c];
+  }else if(LOC.sel.includes(c)){if(c!==LOC.sel[0])LOC.sel=LOC.sel.filter(x=>x!==c);}
+  else LOC.sel.push(c);
+  lastHTML=null;render();
 }
+function ocGo(suit){const cs=LOC.sel.slice();LOC.sel=[];if(cs.length)act({type:'ocplay',cs,s:suit});}
 
 const GAMES={mine:MINE,bingo:BINGO,word:WORD,omok:OMOK,mafia:MAFIA,liar:LIAR,fruit:FRUIT,onecard:ONECARD};
 
@@ -2038,8 +2097,9 @@ $('#content').addEventListener('click',e=>{
     case 'fflip':act({type:'fflip'});break;
     case 'fring':fruitRing();break;
     case 'ocplay':ocPlayClick(v);break;
-    case 'ocsuit':if(LOC.pick7){const c=LOC.pick7;LOC.pick7=null;act({type:'ocplay',c,s:v});}break;
-    case 'occancel':LOC.pick7=null;lastHTML=null;render();break;
+    case 'ocsuit':ocGo(v);break;
+    case 'ocgo':ocGo();break;
+    case 'occancel':LOC.sel=[];lastHTML=null;render();break;
     case 'ocdraw':act({type:'ocdraw'});break;
     case 'ocone':act({type:'ocone'});break;
     case 'lforce':if(confirm('토론을 끝내고 투표로 넘어갈까요?'))act({type:'lforce'});break;
@@ -2106,6 +2166,10 @@ $('#content').addEventListener('contextmenu',e=>{
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){e.preventDefault();if(!$('#dlg').hidden)closeDlg();toggleBoss();return;}
+  // 과일 종치기: 스페이스바로 카드 뒤집기 (입력칸에 있을 땐 제외)
+  if((e.key===' '||e.code==='Space')&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)&&S&&S.phase==='game'&&S.game==='fruit'&&!document.body.classList.contains('boss')){
+    e.preventDefault();if(!e.repeat&&FRUIT.myTurn())act({type:'fflip'});return;
+  }
   if(e.key!=='Enter'||e.isComposing||e.keyCode===229)return;
   const id=e.target.id;
   if(id==='codeIn'||(id==='nameIn'&&$('#codeIn').value.trim()))joinRoom();
